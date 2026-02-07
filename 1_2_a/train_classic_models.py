@@ -3,12 +3,10 @@ Training Script for Classic ML Models - Part I.2.a)
 Extracts hand landmarks using MediaPipe and trains SVM, KNN, and Random Forest classifiers
 """
 
-import os
 import cv2
 import mediapipe as mp
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -38,12 +36,12 @@ class HandGestureDataExtractor:
         self.dataset_path = Path(dataset_path)
         self.use_z_coord = use_z_coord
         self.gesture_mapping = {
-            "open_palm": 1,
-            "closed_hand": 2,
-            "v_shape": 3,
-            "hand_right": 4,
-            "hand_left": 5,
-            "thumbs_up": 6,
+            "open_palm": 0,
+            "closed_hand": 1,
+            "v_shape": 2,
+            "hand_right": 3,
+            "hand_left": 4,
+            "thumbs_up": 5,
         }
 
     def extract_landmarks_from_video(self, video_path):
@@ -353,7 +351,8 @@ def main():
         "thumbs_up",
     ]
     for label, count in stats["train_class_distribution"].items():
-        print(f"  {gesture_names[label - 1]}: {count} samples")
+        # labels are 0-based indices that map directly to gesture_names
+        print(f"  {gesture_names[label]}: {count} samples")
 
     # Train and evaluate models
     trained_models, scaler = train_and_evaluate_models(

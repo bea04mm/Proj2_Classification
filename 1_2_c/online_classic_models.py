@@ -89,9 +89,7 @@ class OnlineGestureClassifier:
 
         # Predict
         prediction = self.model.predict(landmarks_scaled)[0]
-        gesture_name = self.gesture_names[
-            prediction - 1
-        ]  # Labels are 1-6, so use prediction - 1 as index
+        gesture_name = self.gesture_names[prediction]  # Labels are 0-5
 
         return gesture_name, prediction
 
@@ -248,7 +246,7 @@ def main():
     """Main function to run online classification"""
 
     # Configuration
-    MODELS_DIR = Path("../1_2_a/models")
+    MODELS_DIR = Path("../1_2_a_and_1_2_b/models")
     SCALER_PATH = MODELS_DIR / "scaler.pkl"
 
     # Available models
@@ -276,14 +274,14 @@ def main():
             if not model_path.exists():
                 print(f"Error: Model file not found: {model_path}")
                 print(
-                    "Please run the training script first (1_2_a/train_classic_models.py)"
+                    "Please run the training script first (1_2_a_and_1_2_b/train_classic_models.py)"
                 )
                 return
 
             if not SCALER_PATH.exists():
                 print(f"Error: Scaler file not found: {SCALER_PATH}")
                 print(
-                    "Please run the training script first (1_2_a/train_classic_models.py)"
+                    "Please run the training script first (1_2_a_and_1_2_b/train_classic_models.py)"
                 )
                 return
 

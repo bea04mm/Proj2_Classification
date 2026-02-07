@@ -7,7 +7,6 @@ import os
 import cv2
 import mediapipe as mp
 import numpy as np
-import pandas as pd
 from pathlib import Path
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 import matplotlib.pyplot as plt
