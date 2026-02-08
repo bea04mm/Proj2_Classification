@@ -1,0 +1,10 @@
+Training samples: 216
+Testing samples: 108
+
+Training XY model...
+Accuracy (xy): 0.7963
+
+Training XYZ model...
+Accuracy (xyz): 0.8704
+
+Best model: xyz Accuracy: 0.8704

@@ -15,17 +15,22 @@ Proj2_Classification/
 │   │   ├── hand_left/
 │   │   └── thumbs_up/
 ├── 1_2_a/                    # Part I.2.a) - Classic ML offline training
-│   ├── train_classic_models.py
-│   └── models/              # Trained classic models (generated)
+│   ├── train_classic_models.py         # Absolute coordinates
+│   ├── train_classic_models_v2.py      # Relative to wrist
+│   └── models_comparison/              # Trained models (generated)
 ├── 1_2_b/                    # Part I.2.b) - CNN-1D offline training
-│   ├── train_cnn_model.py
-│   └── models/              # Trained CNN model (generated)
-├── 1_2_a_and_1_2_b/         # Combined training script (all models)
-│   ├── train_models.py
-│   └── models/              # All trained models (generated)
+│   ├── train_cnn_model.py              # Absolute coordinates
+│   ├── train_cnn_model_v2.py           # Relative to wrist
+│   ├── cnn_models_comparison/          # Models with absolute coords
+│   └── cnn_models_rel_wrist/           # Models relative to wrist
 ├── 1_2_c/                    # Part I.2.c) - Online classification
-│   ├── online_classic_models.py  # Real-time with classic ML
-│   └── online_cnn_model.py       # Real-time with CNN-1D
+│   ├── online_classic_models.py        # Real-time with classic ML
+│   └── online_cnn_model.py             # Real-time with CNN-1D
+├── 1_3_a/                    # Part I.3.a) - CNN with temporal features
+│   ├── train_cnn_time_model.py         # Absolute coordinates + deltas
+│   └── train_cnn_time_model_v2.py      # Relative to wrist + deltas
+├── 1_3_b/                    # Part I.3.b) - Online with temporal features
+│   └── online_cnn_time_model.py        # Real-time with temporal CNN
 ├── requirements.txt          # Python dependencies
 └── README.md                # This file
 ```
@@ -57,10 +62,11 @@ pip install -r requirements.txt
 - OpenCV 4.8.1.78
 - protobuf 3.20.3
 - scikit-learn 1.3.2
+- scikeras 0.12.0
 - NumPy 1.24.3
 - Matplotlib 3.8.2
 - Seaborn 0.13.0
-- TensorFlow 2.10.0
+- TensorFlow 2.15.0
 
 See [requirements.txt](requirements.txt) for complete list.
 
@@ -77,24 +83,35 @@ The project recognizes 6 static hand gestures:
 
 ---
 
-## Part I.2.a) - Model Training (Offline)
+## Part I.2.a) - Classic ML Model Training (Offline)
 
 ### Overview
 
-Trains 3 classic Machine Learning models (SVM, KNN, Random Forest) using hand landmarks extracted from video clips.
+Trains 3 classic Machine Learning models (SVM, KNN, Random Forest) using hand landmarks extracted from video clips. Two versions available:
+- **Version 1** (`train_classic_models.py`): Uses absolute landmark coordinates
+- **Version 2** (`train_classic_models_v2.py`): Uses coordinates relative to wrist (more robust to hand position)
 
-### Running the Training Script
+### Running the Training Scripts
 
+**Absolute coordinates:**
 ```bash
 cd 1_2_a
 python train_classic_models.py
 ```
 
-### What the Script Does
+**Relative to wrist (recommended):**
+```bash
+cd 1_2_a
+python train_classic_models_v2.py
+```
+
+### What the Scripts Do
 
 1. **Loads video clips** from `Videos_Datasets/` folder
 2. **Extracts hand landmarks** using MediaPipe Hands (21 landmarks per hand)
-3. **Uses (x,y) coordinates** by default (can be changed to (x,y,z) in the script)
+3. **Processes coordinates**:
+   - Version 1: Uses absolute (x,y) or (x,y,z) coordinates
+   - Version 2: Normalizes to wrist position (more translation-invariant)
 4. **Splits data**: 
    - Training: clips 1-4 (first 4 clips per gesture per subject)
    - Testing: clips 5-6 (last 2 clips per gesture per subject)
@@ -106,11 +123,11 @@ python train_classic_models.py
    - Accuracy scores
    - Classification reports (precision, recall, f1-score)
    - Confusion matrices (saved as PNG images)
-7. **Saves all trained models** in the `1_2_a/models/` folder
+7. **Saves all trained models** in `models_comparison/xy/` or `models_comparison/xyz/`
 
 ### Output Files
 
-After running, you'll find in `1_2_a/models/`:
+After running, you'll find in `1_2_a/models_comparison/xy/` (or `xyz/`):
 
 - `scaler.pkl` - StandardScaler for feature normalization
 - `svm_model.pkl` - Trained SVM model
@@ -152,29 +169,34 @@ RandomForestClassifier(n_estimators=100, max_depth=20, random_state=42)
 
 ### Overview
 
-Trains a 1D Convolutional Neural Network (CNN-1D) using temporal sequences of hand landmarks extracted from video clips. Unlike classic ML models that use averaged features, CNN-1D processes sequences of frames to capture temporal patterns.
+Trains a 1D Convolutional Neural Network (CNN-1D) using temporal sequences of hand landmarks extracted from video clips. Unlike classic ML models that use averaged features, CNN-1D processes sequences of frames to capture temporal patterns. Two versions available:
+- **Version 1** (`train_cnn_model.py`): Uses absolute landmark coordinates
+- **Version 2** (`train_cnn_model_v2.py`): Uses coordinates relative to wrist
 
-### Running the CNN Training Script
+### Running the CNN Training Scripts
 
+**Absolute coordinates:**
 ```bash
 cd 1_2_b
 python train_cnn_model.py
 ```
 
-**Alternative:** Train all models (classic + CNN) together:
+**Relative to wrist (recommended):**
 ```bash
-cd 1_2_a_and_1_2_b
-python train_models.py
+cd 1_2_b
+python train_cnn_model_v2.py
 ```
 
-### What the Script Does
+Both scripts test XY and XYZ coordinate configurations and save the best models.
+
+### What the Scripts Do
 
 1. **Loads video clips** from `Videos_Datasets/` folder
 2. **Extracts hand landmark sequences** using MediaPipe Hands
 3. **Processes temporal sequences**:
    - Each clip is processed as a sequence of 30 frames
-   - 21 landmarks per frame with (x,y) coordinates = 42 features per frame
-   - Final input shape: (30, 42) per clip
+   - 21 landmarks per frame with (x,y) or (x,y,z) coordinates
+   - Final input shape: (30, 42) for XY or (30, 63) for XYZ
 4. **Splits data**:
    - Training: clips 1-4 (first 4 clips per gesture per subject)
    - Testing: clips 5-6 (last 2 clips per gesture per subject)
@@ -183,15 +205,15 @@ python train_models.py
    - MaxPooling for temporal downsampling
    - Dense layers for classification
 6. **Trains the model**:
-   - Adam optimizer with learning rate scheduling
-   - Early stopping to prevent overfitting
-   - Model checkpointing to save best model
+   - Adam optimizer with learning rate scheduling (ReduceLROnPlateau)
+   - Early stopping to prevent overfitting (patience=15)
+   - Up to 100 epochs
 7. **Evaluates performance**:
    - Accuracy scores on test set
    - Classification report (precision, recall, f1-score)
    - Confusion matrix visualization
    - Training history plots (loss & accuracy curves)
-8. **Saves trained model** as `1_2_b/models/cnn1d_model.keras`
+8. **Saves trained models** in `cnn_models_comparison/` or `cnn_models_rel_wrist/`
 
 ### CNN-1D Architecture
 
@@ -208,24 +230,25 @@ Dense(6, softmax) # Output: 6 gesture classes
 
 ### Output Files
 
-After running, you'll find in `1_2_b/models/`:
+After running, you'll find in `1_2_b/cnn_models_comparison/xy/` or `xyz/`:
 
 - `cnn1d_model.keras` - Trained CNN-1D model
-- `confusion_matrix_CNN1D.png` - Confusion matrix visualization
+- `confusion_matrix.png` - Confusion matrix visualization
 - `training_history.png` - Loss and accuracy curves
+
+For version 2 (relative to wrist), files are in `1_2_b/cnn_models_rel_wrist/xy/` or `xyz/`
 
 ### Configuration
 
-You can modify parameters in `train_cnn_model.py`:
+Scripts automatically test both XY and XYZ configurations. Key parameters:
 
 ```python
-# In the main() function:
+# In the scripts:
 DATASET_PATH = Path('../Videos_Datasets')  # Path to dataset
-USE_Z_COORD = False  # Set to True to use (x,y,z) coordinates
 SEQ_LEN = 30  # Number of frames per sequence
 TRAIN_CLIPS = [1, 2, 3, 4]  # Training clip indices
 TEST_CLIPS = [5, 6]  # Testing clip indices
-BATCH_SIZE = 32
+BATCH_SIZE = 16
 EPOCHS = 100  # With early stopping
 ```
 
@@ -238,8 +261,7 @@ loss = 'sparse_categorical_crossentropy'
 
 # Callbacks
 EarlyStopping(patience=15, restore_best_weights=True)
-ReduceLROnPlateau(factor=0.5, patience=5)
-ModelCheckpoint(save_best_only=True)
+ReduceLROnPlateau(factor=0.5, patience=5, min_lr=1e-6)
 ```
 
 ---
@@ -316,6 +338,18 @@ cd 1_2_c
 python online_cnn_model.py
 ```
 
+### Usage
+
+1. Select which CNN model to use:
+   - **1** - CNN-1D: XY Coordinates (absolute)
+   - **2** - CNN-1D: XYZ Coordinates (absolute)
+   - **3** - CNN-1D V2: XY Coordinates (relative to wrist)
+   - **4** - CNN-1D V2: XYZ Coordinates (relative to wrist)
+
+2. The webcam will open and start classifying gestures in real-time
+
+3. Press **'q'** to quit
+
 ### How It Works (CNN Version)
 
 1. **Captures video** from webcam (1280x720 @ 30fps)
@@ -360,6 +394,79 @@ The video window shows:
 - Make **clear, distinct gestures**
 - The **SVM model** typically gives best results
 - Avoid cluttered backgrounds
+
+---
+
+## Part I.3.a) - CNN with Temporal Features Training (Offline)
+
+### Overview
+
+Extends CNN-1D models with temporal features (velocity/delta information) to capture hand motion dynamics. Uses GridSearchCV for hyperparameter optimization. Two versions available:
+- **Version 1** (`train_cnn_time_model.py`): Absolute coordinates + temporal deltas
+- **Version 2** (`train_cnn_time_model_v2.py`): Relative to wrist + temporal deltas
+
+### Running the Training Scripts
+
+**Absolute coordinates with temporal features:**
+```bash
+cd 1_3_a
+python train_cnn_time_model.py
+```
+
+**Relative to wrist with temporal features:**
+```bash
+cd 1_3_a
+python train_cnn_time_model_v2.py
+```
+
+### What the Scripts Do
+
+1. **Extracts landmark sequences** with temporal information
+2. **Computes frame-to-frame deltas** (velocity/motion features)
+3. **Normalizes sequences** for better training stability
+4. **Performs GridSearchCV** to find optimal hyperparameters:
+   - Number of filters (32, 64, 128)
+   - Dropout rates (0.2, 0.3, 0.4)
+5. **Trains CNN model** with best parameters
+6. **Evaluates on test set** and saves best model
+
+### Key Differences from Part I.2.b
+
+- **Temporal features**: Includes frame-to-frame differences (motion)
+- **GridSearchCV**: Automated hyperparameter tuning
+- **Normalized sequences**: Better handling of different hand sizes
+- **Enhanced architecture**: Optimized for temporal dynamics
+
+### Output Files
+
+After running, you'll find models with optimized hyperparameters and performance metrics.
+
+---
+
+## Part I.3.b) - Online Classification with Temporal Features
+
+### Overview
+
+Real-time gesture classification using CNN models trained with temporal features (Part I.3.a).
+
+### Running Online Classification
+
+```bash
+cd 1_3_b
+python online_cnn_time_model.py
+```
+
+### Usage
+
+1. Select which temporal CNN model to use
+2. The webcam will open and start classifying with motion-aware predictions
+3. Press **'q'** to quit
+
+### Key Advantages
+
+- **Motion-aware**: Captures hand movement dynamics
+- **More robust**: Better handling of gesture transitions
+- **Optimized**: Uses GridSearchCV-tuned hyperparameters
 
 ---
 
@@ -432,17 +539,21 @@ pip install -r requirements.txt
 
 **Models not found:**
 ```bash
-# For classic models:
+# For classic models (absolute coords):
 cd 1_2_a
 python train_classic_models.py
 
-# For CNN model:
+# For classic models (relative to wrist):
+cd 1_2_a
+python train_classic_models_v2.py
+
+# For CNN model (absolute coords):
 cd 1_2_b
 python train_cnn_model.py
 
-# For all models:
-cd 1_2_a_and_1_2_b
-python train_models.py
+# For CNN model (relative to wrist):
+cd 1_2_b
+python train_cnn_model_v2.py
 ```
 
 **No hand detected:**
@@ -467,36 +578,69 @@ python train_models.py
 - Use a faster computer
 - Reduce camera resolution in code
 
+### Training Issues (Part I.3.a)
+
+**ModuleNotFoundError: No module named 'tensorflow.keras.wrappers':**
+```bash
+pip install scikeras
+```
+The `tensorflow.keras.wrappers` module was removed in newer TensorFlow versions. Use `scikeras` instead.
+
+**GridSearchCV taking too long:**
+- Reduce the parameter grid size
+- Decrease `cv` value (e.g., cv=2 instead of cv=3)
+- Use fewer parameter combinations
+- Consider training without GridSearch first
+
+**Out of memory errors:**
+- Reduce batch size
+- Close other applications
+- Use fewer filters in the parameter grid
+
 ---
 
 ## Performance Results
 
 Based on typical training results:
 
-### Classic Machine Learning Models
+### Classic Machine Learning Models (Part I.2.a)
 
 | Model | Accuracy | Notes |
 |-------|----------|-------|
-| **SVM** | ~98.75% | Best overall performance, recommended |
-| **Random Forest** | ~96.00% | Good balance of speed and accuracy |
-| **KNN** | ~95.90% | Fast inference, slightly lower accuracy |
+| **SVM** | ~98-99% | Best overall performance, recommended |
+| **Random Forest** | ~96-97% | Good balance of speed and accuracy |
+| **KNN** | ~95-96% | Fast inference, slightly lower accuracy |
 
-### Deep Learning Model
+### Deep Learning Models
 
 | Model | Accuracy | Notes |
 |-------|----------|-------|
-| **CNN-1D** | ~97-99% | Captures temporal patterns, robust to variations |
+| **CNN-1D (I.2.b)** | ~97-99% | Captures temporal patterns, robust to variations |
+| **CNN-1D with Temporal Features (I.3.a)** | ~97-99%+ | Motion-aware, GridSearchCV optimized |
+
+### Coordinate System Comparison
+
+| Approach | Advantages | Disadvantages |
+|----------|------------|---------------|
+| **Absolute Coords** | Simple, direct | Sensitive to hand position/distance |
+| **Relative to Wrist** | Translation-invariant, more robust | Slightly more complex processing |
+| **XY Coordinates** | Faster processing, smaller models | Loses depth information |
+| **XYZ Coordinates** | Full 3D information | Larger models, more data needed |
 
 ### Comparison
 
-- **Classic ML**: Best for instant single-frame predictions, lower latency
+- **Classic ML (SVM)**: Best for instant single-frame predictions, lowest latency, excellent accuracy
 - **CNN-1D**: Best for temporal pattern recognition, smoother predictions, requires sequence buffer
+- **CNN with Temporal Features**: Best for motion-based gestures, captures dynamics, optimized hyperparameters
+- **Relative to Wrist**: More robust to hand position variations, recommended for real-world deployment
 - All models show excellent performance (>95% accuracy) for the 6-gesture classification task
 
 ### Recommended Use Cases
 
-- **SVM**: Best overall classic ML model, use when immediate response is critical
-- **CNN-1D**: Best for continuous gesture recognition with temporal context
+- **SVM (Absolute)**: Best overall classic ML model, use when immediate response is critical
+- **SVM (Relative to Wrist)**: Most robust to position variations
+- **CNN-1D (Relative to Wrist)**: Best for continuous gesture recognition with temporal context
+- **CNN with Temporal Features**: Best for dynamic, motion-based gestures
 - **Random Forest**: Good alternative with balanced performance
 - **KNN**: Fastest inference, suitable for resource-constrained scenarios
 

@@ -1,0 +1,8 @@
+Training samples: 216
+Testing samples: 108
+
+Training XY model...
+Accuracy (xy) after GridSearch: 0.3796
+
+Training XYZ model...
+Accuracy (xyz) after GridSearch: 0.5185

@@ -1,0 +1,1004 @@
+(base) PS C:\Users\Utilizador> conda env remove -n hand_gesture
+3 channel Terms of Service accepted
+
+Remove all packages in environment C:\Users\Utilizador\anaconda3\envs\hand_gesture:
+
+
+## Package Plan ##
+
+  environment location: C:\Users\Utilizador\anaconda3\envs\hand_gesture
+
+
+The following packages will be REMOVED:
+
+  bzip2-1.0.8-h2bbff1b_6
+  ca-certificates-2025.12.2-haa95532_0
+  expat-2.7.4-hd7fb8db_0
+  libexpat-2.7.4-hd7fb8db_0
+  libffi-3.4.4-hd77b12b_1
+  libzlib-1.3.1-h02ab6af_0
+  openssl-3.0.19-hbb43b14_0
+  packaging-25.0-py310haa95532_1
+  pip-25.3-pyhc872135_0
+  python-3.10.19-h981015d_0
+  setuptools-80.10.2-py310haa95532_0
+  sqlite-3.51.1-hda9a48d_0
+  tk-8.6.15-hf199647_0
+  tzdata-2025c-he532380_0
+  ucrt-10.0.22621.0-haa95532_0
+  vc-14.3-h2df5915_10
+  vc14_runtime-14.44.35208-h4927774_10
+  vs2015_runtime-14.44.35208-ha6b5a95_10
+  wheel-0.46.3-py310haa95532_0
+  xz-5.6.4-h4754444_1
+  zlib-1.3.1-h02ab6af_0
+
+
+Proceed ([y]/n)? y
+
+
+Downloading and Extracting Packages:
+
+Preparing transaction: done
+Verifying transaction: done
+Executing transaction: done
+Everything found within the environment (C:\Users\Utilizador\anaconda3\envs\hand_gesture), including any conda environment configurations and any non-conda files, will be deleted. Do you wish to continue?
+ (y/[n])? y
+
+(base) PS C:\Users\Utilizador> conda create -n hand_gesture python=3.10 -y
+3 channel Terms of Service accepted
+Channels:
+ - defaults
+Platform: win-64
+Collecting package metadata (repodata.json): failed
+
+CondaError: KeyboardInterrupt
+
+(base) PS C:\Users\Utilizador> conda create -n hand_gesture python=3.10 -y
+3 channel Terms of Service accepted
+Channels:
+ - defaults
+Platform: win-64
+Collecting package metadata (repodata.json): done
+Solving environment: done
+
+## Package Plan ##
+
+  environment location: C:\Users\Utilizador\anaconda3\envs\hand_gesture
+
+  added / updated specs:
+    - python=3.10
+
+
+The following NEW packages will be INSTALLED:
+
+  bzip2              pkgs/main/win-64::bzip2-1.0.8-h2bbff1b_6
+  ca-certificates    pkgs/main/win-64::ca-certificates-2025.12.2-haa95532_0
+  expat              pkgs/main/win-64::expat-2.7.4-hd7fb8db_0
+  libexpat           pkgs/main/win-64::libexpat-2.7.4-hd7fb8db_0
+  libffi             pkgs/main/win-64::libffi-3.4.4-hd77b12b_1
+  libzlib            pkgs/main/win-64::libzlib-1.3.1-h02ab6af_0
+  openssl            pkgs/main/win-64::openssl-3.0.19-hbb43b14_0
+  packaging          pkgs/main/win-64::packaging-25.0-py310haa95532_1
+  pip                pkgs/main/noarch::pip-25.3-pyhc872135_0
+  python             pkgs/main/win-64::python-3.10.19-h981015d_0
+  setuptools         pkgs/main/win-64::setuptools-80.10.2-py310haa95532_0
+  sqlite             pkgs/main/win-64::sqlite-3.51.1-hda9a48d_0
+  tk                 pkgs/main/win-64::tk-8.6.15-hf199647_0
+  tzdata             pkgs/main/noarch::tzdata-2025c-he532380_0
+  ucrt               pkgs/main/win-64::ucrt-10.0.22621.0-haa95532_0
+  vc                 pkgs/main/win-64::vc-14.3-h2df5915_10
+  vc14_runtime       pkgs/main/win-64::vc14_runtime-14.44.35208-h4927774_10
+  vs2015_runtime     pkgs/main/win-64::vs2015_runtime-14.44.35208-ha6b5a95_
+  wheel              pkgs/main/win-64::wheel-0.46.3-py310haa95532_0
+  xz                 pkgs/main/win-64::xz-5.6.4-h4754444_1
+  zlib               pkgs/main/win-64::zlib-1.3.1-h02ab6af_0
+
+
+
+Downloading and Extracting Packages:
+
+Preparing transaction: done
+Verifying transaction: done
+Executing transaction: done
+#
+# To activate this environment, use
+#
+#     $ conda activate hand_gesture
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+(base) PS C:\Users\Utilizador> conda activate hand_gesture
+(hand_gesture) PS C:\Users\Utilizador> cd "C:\Users\Utilizador\OneDrive - Instituto Politécnico de Tomar\Desktop\Aprendizagem Computacional\Proj2_Classification\1_2_a_and_1_2_b"
+(hand_gesture) PS C:\Users\Utilizador\OneDrive - Instituto Politécnico de Tomar\Desktop\Aprendizagem Computacional\Proj2_Classification\1_2_a_and_1_2_b> cd ..
+(hand_gesture) PS C:\Users\Utilizador\OneDrive - Instituto Politécnico de Tomar\Desktop\Aprendizagem Computacional\Proj2_Classification> pip install -r requirements.txt
+Collecting protobuf==3.20.3 (from -r requirements.txt (line 1))
+  Using cached protobuf-3.20.3-cp310-cp310-win_amd64.whl.metadata (698 bytes)
+Collecting mediapipe==0.10.9 (from -r requirements.txt (line 2))
+  Using cached mediapipe-0.10.9-cp310-cp310-win_amd64.whl.metadata (9.8 kB)
+Collecting opencv-python==4.8.1.78 (from -r requirements.txt (line 3))
+  Using cached opencv_python-4.8.1.78-cp37-abi3-win_amd64.whl.metadata (20 kB)
+Collecting numpy==1.24.3 (from -r requirements.txt (line 4))
+  Using cached numpy-1.24.3-cp310-cp310-win_amd64.whl.metadata (5.6 kB)
+Collecting scikit-learn==1.3.2 (from -r requirements.txt (line 5))
+  Using cached scikit_learn-1.3.2-cp310-cp310-win_amd64.whl.metadata (11 kB)
+Collecting matplotlib==3.8.2 (from -r requirements.txt (line 6))
+  Using cached matplotlib-3.8.2-cp310-cp310-win_amd64.whl.metadata (5.9 kB)
+Collecting seaborn==0.13.0 (from -r requirements.txt (line 7))
+  Using cached seaborn-0.13.0-py3-none-any.whl.metadata (5.3 kB)
+Collecting tensorflow==2.15.0 (from -r requirements.txt (line 8))
+  Using cached tensorflow-2.15.0-cp310-cp310-win_amd64.whl.metadata (3.6 kB)
+Collecting absl-py (from mediapipe==0.10.9->-r requirements.txt (line 2))
+  Using cached absl_py-2.4.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting attrs>=19.1.0 (from mediapipe==0.10.9->-r requirements.txt (line 2))
+  Using cached attrs-25.4.0-py3-none-any.whl.metadata (10 kB)
+Collecting flatbuffers>=2.0 (from mediapipe==0.10.9->-r requirements.txt (line 2))
+  Using cached flatbuffers-25.12.19-py2.py3-none-any.whl.metadata (1.0 kB)
+Collecting opencv-contrib-python (from mediapipe==0.10.9->-r requirements.txt (line 2))
+  Using cached opencv_contrib_python-4.13.0.92-cp37-abi3-win_amd64.whl.metadata (20 kB)
+Collecting sounddevice>=0.4.4 (from mediapipe==0.10.9->-r requirements.txt (line 2))
+  Using cached sounddevice-0.5.5-py3-none-win_amd64.whl.metadata (1.4 kB)
+Collecting scipy>=1.5.0 (from scikit-learn==1.3.2->-r requirements.txt (line 5))
+  Using cached scipy-1.15.3-cp310-cp310-win_amd64.whl.metadata (60 kB)
+Collecting joblib>=1.1.1 (from scikit-learn==1.3.2->-r requirements.txt (line 5))
+  Using cached joblib-1.5.3-py3-none-any.whl.metadata (5.5 kB)
+Collecting threadpoolctl>=2.0.0 (from scikit-learn==1.3.2->-r requirements.txt (line 5))
+  Using cached threadpoolctl-3.6.0-py3-none-any.whl.metadata (13 kB)
+Collecting contourpy>=1.0.1 (from matplotlib==3.8.2->-r requirements.txt (line 6))
+  Using cached contourpy-1.3.2-cp310-cp310-win_amd64.whl.metadata (5.5 kB)
+Collecting cycler>=0.10 (from matplotlib==3.8.2->-r requirements.txt (line 6))
+  Using cached cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)
+Collecting fonttools>=4.22.0 (from matplotlib==3.8.2->-r requirements.txt (line 6))
+  Using cached fonttools-4.61.1-cp310-cp310-win_amd64.whl.metadata (116 kB)
+Collecting kiwisolver>=1.3.1 (from matplotlib==3.8.2->-r requirements.txt (line 6))
+  Using cached kiwisolver-1.4.9-cp310-cp310-win_amd64.whl.metadata (6.4 kB)
+Requirement already satisfied: packaging>=20.0 in c:\users\utilizador\anaconda3\envs\hand_gesture\lib\site-packages (from matplotlib==3.8.2->-r requirements.txt (line 6)) (25.0)
+Collecting pillow>=8 (from matplotlib==3.8.2->-r requirements.txt (line 6))
+  Using cached pillow-12.1.0-cp310-cp310-win_amd64.whl.metadata (9.0 kB)
+Collecting pyparsing>=2.3.1 (from matplotlib==3.8.2->-r requirements.txt (line 6))
+  Using cached pyparsing-3.3.2-py3-none-any.whl.metadata (5.8 kB)
+Collecting python-dateutil>=2.7 (from matplotlib==3.8.2->-r requirements.txt (line 6))
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting pandas>=1.2 (from seaborn==0.13.0->-r requirements.txt (line 7))
+  Using cached pandas-2.3.3-cp310-cp310-win_amd64.whl.metadata (19 kB)
+Collecting tensorflow-intel==2.15.0 (from tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached tensorflow_intel-2.15.0-cp310-cp310-win_amd64.whl.metadata (5.1 kB)
+Collecting astunparse>=1.6.0 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached astunparse-1.6.3-py2.py3-none-any.whl.metadata (4.4 kB)
+Collecting gast!=0.5.0,!=0.5.1,!=0.5.2,>=0.2.1 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached gast-0.7.0-py3-none-any.whl.metadata (1.5 kB)
+Collecting google-pasta>=0.1.1 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached google_pasta-0.2.0-py3-none-any.whl.metadata (814 bytes)
+Collecting h5py>=2.9.0 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached h5py-3.15.1-cp310-cp310-win_amd64.whl.metadata (3.1 kB)
+Collecting libclang>=13.0.0 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached libclang-18.1.1-py2.py3-none-win_amd64.whl.metadata (5.3 kB)
+Collecting ml-dtypes~=0.2.0 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached ml_dtypes-0.2.0-cp310-cp310-win_amd64.whl.metadata (20 kB)
+Collecting opt-einsum>=2.3.2 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached opt_einsum-3.4.0-py3-none-any.whl.metadata (6.3 kB)
+Requirement already satisfied: setuptools in c:\users\utilizador\anaconda3\envs\hand_gesture\lib\site-packages (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8)) (80.10.2)
+Collecting six>=1.12.0 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Collecting termcolor>=1.1.0 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached termcolor-3.3.0-py3-none-any.whl.metadata (6.5 kB)
+Collecting typing-extensions>=3.6.6 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting wrapt<1.15,>=1.11.0 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached wrapt-1.14.2-cp310-cp310-win_amd64.whl.metadata (6.6 kB)
+Collecting tensorflow-io-gcs-filesystem>=0.23.1 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached tensorflow_io_gcs_filesystem-0.31.0-cp310-cp310-win_amd64.whl.metadata (14 kB)
+Collecting grpcio<2.0,>=1.24.3 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached grpcio-1.78.0-cp310-cp310-win_amd64.whl.metadata (3.9 kB)
+Collecting tensorboard<2.16,>=2.15 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached tensorboard-2.15.2-py3-none-any.whl.metadata (1.7 kB)
+Collecting tensorflow-estimator<2.16,>=2.15.0 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached tensorflow_estimator-2.15.0-py2.py3-none-any.whl.metadata (1.3 kB)
+Collecting keras<2.16,>=2.15.0 (from tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached keras-2.15.0-py3-none-any.whl.metadata (2.4 kB)
+Collecting google-auth<3,>=1.6.3 (from tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached google_auth-2.48.0-py3-none-any.whl.metadata (6.2 kB)
+Collecting google-auth-oauthlib<2,>=0.5 (from tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached google_auth_oauthlib-1.2.4-py3-none-any.whl.metadata (3.1 kB)
+Collecting markdown>=2.6.8 (from tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached markdown-3.10.1-py3-none-any.whl.metadata (5.1 kB)
+Collecting requests<3,>=2.21.0 (from tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+Collecting tensorboard-data-server<0.8.0,>=0.7.0 (from tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached tensorboard_data_server-0.7.2-py3-none-any.whl.metadata (1.1 kB)
+Collecting werkzeug>=1.0.1 (from tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached werkzeug-3.1.5-py3-none-any.whl.metadata (4.0 kB)
+Collecting pyasn1-modules>=0.2.1 (from google-auth<3,>=1.6.3->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached pyasn1_modules-0.4.2-py3-none-any.whl.metadata (3.5 kB)
+Collecting cryptography>=38.0.3 (from google-auth<3,>=1.6.3->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached cryptography-46.0.4-cp38-abi3-win_amd64.whl.metadata (5.7 kB)
+Collecting rsa<5,>=3.1.4 (from google-auth<3,>=1.6.3->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached rsa-4.9.1-py3-none-any.whl.metadata (5.6 kB)
+Collecting requests-oauthlib>=0.7.0 (from google-auth-oauthlib<2,>=0.5->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached requests_oauthlib-2.0.0-py2.py3-none-any.whl.metadata (11 kB)
+Collecting charset_normalizer<4,>=2 (from requests<3,>=2.21.0->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached charset_normalizer-3.4.4-cp310-cp310-win_amd64.whl.metadata (38 kB)
+Collecting idna<4,>=2.5 (from requests<3,>=2.21.0->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+Collecting urllib3<3,>=1.21.1 (from requests<3,>=2.21.0->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+Collecting certifi>=2017.4.17 (from requests<3,>=2.21.0->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached certifi-2026.1.4-py3-none-any.whl.metadata (2.5 kB)
+Collecting pyasn1>=0.1.3 (from rsa<5,>=3.1.4->google-auth<3,>=1.6.3->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached pyasn1-0.6.2-py3-none-any.whl.metadata (8.4 kB)
+Requirement already satisfied: wheel<1.0,>=0.23.0 in c:\users\utilizador\anaconda3\envs\hand_gesture\lib\site-packages (from astunparse>=1.6.0->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8)) (0.46.3)
+Collecting cffi>=2.0.0 (from cryptography>=38.0.3->google-auth<3,>=1.6.3->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached cffi-2.0.0-cp310-cp310-win_amd64.whl.metadata (2.6 kB)
+Collecting pycparser (from cffi>=2.0.0->cryptography>=38.0.3->google-auth<3,>=1.6.3->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+Collecting pytz>=2020.1 (from pandas>=1.2->seaborn==0.13.0->-r requirements.txt (line 7))
+  Using cached pytz-2025.2-py2.py3-none-any.whl.metadata (22 kB)
+Collecting tzdata>=2022.7 (from pandas>=1.2->seaborn==0.13.0->-r requirements.txt (line 7))
+  Using cached tzdata-2025.3-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting oauthlib>=3.0.0 (from requests-oauthlib>=0.7.0->google-auth-oauthlib<2,>=0.5->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached oauthlib-3.3.1-py3-none-any.whl.metadata (7.9 kB)
+Collecting markupsafe>=2.1.1 (from werkzeug>=1.0.1->tensorboard<2.16,>=2.15->tensorflow-intel==2.15.0->tensorflow==2.15.0->-r requirements.txt (line 8))
+  Using cached markupsafe-3.0.3-cp310-cp310-win_amd64.whl.metadata (2.8 kB)
+INFO: pip is looking at multiple versions of opencv-contrib-python to determine which version is compatible with other requirements. This could take a while.
+Collecting opencv-contrib-python (from mediapipe==0.10.9->-r requirements.txt (line 2))
+  Using cached opencv_contrib_python-4.13.0.90-cp37-abi3-win_amd64.whl.metadata (20 kB)
+  Using cached opencv_contrib_python-4.12.0.88-cp37-abi3-win_amd64.whl.metadata (20 kB)
+  Using cached opencv_contrib_python-4.11.0.86-cp37-abi3-win_amd64.whl.metadata (20 kB)
+Using cached protobuf-3.20.3-cp310-cp310-win_amd64.whl (904 kB)
+Using cached mediapipe-0.10.9-cp310-cp310-win_amd64.whl (50.5 MB)
+Using cached opencv_python-4.8.1.78-cp37-abi3-win_amd64.whl (38.1 MB)
+Using cached numpy-1.24.3-cp310-cp310-win_amd64.whl (14.8 MB)
+Using cached scikit_learn-1.3.2-cp310-cp310-win_amd64.whl (9.3 MB)
+Using cached matplotlib-3.8.2-cp310-cp310-win_amd64.whl (7.6 MB)
+Using cached seaborn-0.13.0-py3-none-any.whl (294 kB)
+Using cached tensorflow-2.15.0-cp310-cp310-win_amd64.whl (2.1 kB)
+Using cached tensorflow_intel-2.15.0-cp310-cp310-win_amd64.whl (300.9 MB)
+Using cached grpcio-1.78.0-cp310-cp310-win_amd64.whl (4.8 MB)
+Using cached keras-2.15.0-py3-none-any.whl (1.7 MB)
+Using cached ml_dtypes-0.2.0-cp310-cp310-win_amd64.whl (938 kB)
+Using cached tensorboard-2.15.2-py3-none-any.whl (5.5 MB)
+Using cached google_auth-2.48.0-py3-none-any.whl (236 kB)
+Using cached google_auth_oauthlib-1.2.4-py3-none-any.whl (19 kB)
+Using cached requests-2.32.5-py3-none-any.whl (64 kB)
+Using cached charset_normalizer-3.4.4-cp310-cp310-win_amd64.whl (107 kB)
+Using cached idna-3.11-py3-none-any.whl (71 kB)
+Using cached rsa-4.9.1-py3-none-any.whl (34 kB)
+Using cached tensorboard_data_server-0.7.2-py3-none-any.whl (2.4 kB)
+Using cached tensorflow_estimator-2.15.0-py2.py3-none-any.whl (441 kB)
+Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Using cached urllib3-2.6.3-py3-none-any.whl (131 kB)
+Using cached wrapt-1.14.2-cp310-cp310-win_amd64.whl (35 kB)
+Using cached absl_py-2.4.0-py3-none-any.whl (135 kB)
+Using cached astunparse-1.6.3-py2.py3-none-any.whl (12 kB)
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Using cached attrs-25.4.0-py3-none-any.whl (67 kB)
+Using cached certifi-2026.1.4-py3-none-any.whl (152 kB)
+Using cached contourpy-1.3.2-cp310-cp310-win_amd64.whl (221 kB)
+Using cached cryptography-46.0.4-cp38-abi3-win_amd64.whl (3.5 MB)
+Using cached cffi-2.0.0-cp310-cp310-win_amd64.whl (182 kB)
+Using cached cycler-0.12.1-py3-none-any.whl (8.3 kB)
+Using cached flatbuffers-25.12.19-py2.py3-none-any.whl (26 kB)
+Using cached fonttools-4.61.1-cp310-cp310-win_amd64.whl (1.6 MB)
+Using cached gast-0.7.0-py3-none-any.whl (22 kB)
+Using cached google_pasta-0.2.0-py3-none-any.whl (57 kB)
+Using cached h5py-3.15.1-cp310-cp310-win_amd64.whl (2.9 MB)
+Using cached joblib-1.5.3-py3-none-any.whl (309 kB)
+Using cached kiwisolver-1.4.9-cp310-cp310-win_amd64.whl (73 kB)
+Using cached libclang-18.1.1-py2.py3-none-win_amd64.whl (26.4 MB)
+Using cached markdown-3.10.1-py3-none-any.whl (107 kB)
+Using cached opt_einsum-3.4.0-py3-none-any.whl (71 kB)
+Using cached pandas-2.3.3-cp310-cp310-win_amd64.whl (11.3 MB)
+Using cached pillow-12.1.0-cp310-cp310-win_amd64.whl (7.0 MB)
+Using cached pyasn1-0.6.2-py3-none-any.whl (83 kB)
+Using cached pyasn1_modules-0.4.2-py3-none-any.whl (181 kB)
+Using cached pyparsing-3.3.2-py3-none-any.whl (122 kB)
+Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Using cached pytz-2025.2-py2.py3-none-any.whl (509 kB)
+Using cached requests_oauthlib-2.0.0-py2.py3-none-any.whl (24 kB)
+Using cached oauthlib-3.3.1-py3-none-any.whl (160 kB)
+Using cached scipy-1.15.3-cp310-cp310-win_amd64.whl (41.3 MB)
+Using cached sounddevice-0.5.5-py3-none-win_amd64.whl (365 kB)
+Using cached tensorflow_io_gcs_filesystem-0.31.0-cp310-cp310-win_amd64.whl (1.5 MB)
+Using cached termcolor-3.3.0-py3-none-any.whl (7.7 kB)
+Using cached threadpoolctl-3.6.0-py3-none-any.whl (18 kB)
+Using cached tzdata-2025.3-py2.py3-none-any.whl (348 kB)
+Using cached werkzeug-3.1.5-py3-none-any.whl (225 kB)
+Using cached markupsafe-3.0.3-cp310-cp310-win_amd64.whl (15 kB)
+Using cached opencv_contrib_python-4.11.0.86-cp37-abi3-win_amd64.whl (46.2 MB)
+Using cached pycparser-3.0-py3-none-any.whl (48 kB)
+Installing collected packages: pytz, libclang, flatbuffers, wrapt, urllib3, tzdata, typing-extensions, threadpoolctl, termcolor, tensorflow-io-gcs-filesystem, tensorflow-estimator, tensorboard-data-server, six, pyparsing, pycparser, pyasn1, protobuf, pillow, opt-einsum, oauthlib, numpy, markupsafe, markdown, kiwisolver, keras, joblib, idna, gast, fonttools, cycler, charset_normalizer, certifi, attrs, absl-py, werkzeug, scipy, rsa, requests, python-dateutil, pyasn1-modules, opencv-python, opencv-contrib-python, ml-dtypes, h5py, grpcio, google-pasta, contourpy, cffi, astunparse, sounddevice, scikit-learn, requests-oauthlib, pandas, matplotlib, cryptography, seaborn, mediapipe, google-auth, google-auth-oauthlib, tensorboard, tensorflow-intel, tensorflow
+Successfully installed absl-py-2.4.0 astunparse-1.6.3 attrs-25.4.0 certifi-2026.1.4 cffi-2.0.0 charset_normalizer-3.4.4 contourpy-1.3.2 cryptography-46.0.4 cycler-0.12.1 flatbuffers-25.12.19 fonttools-4.61.1 gast-0.7.0 google-auth-2.48.0 google-auth-oauthlib-1.2.4 google-pasta-0.2.0 grpcio-1.78.0 h5py-3.15.1 idna-3.11 joblib-1.5.3 keras-2.15.0 kiwisolver-1.4.9 libclang-18.1.1 markdown-3.10.1 markupsafe-3.0.3 matplotlib-3.8.2 mediapipe-0.10.9 ml-dtypes-0.2.0 numpy-1.24.3 oauthlib-3.3.1 opencv-contrib-python-4.11.0.86 opencv-python-4.8.1.78 opt-einsum-3.4.0 pandas-2.3.3 pillow-12.1.0 protobuf-3.20.3 pyasn1-0.6.2 pyasn1-modules-0.4.2 pycparser-3.0 pyparsing-3.3.2 python-dateutil-2.9.0.post0 pytz-2025.2 requests-2.32.5 requests-oauthlib-2.0.0 rsa-4.9.1 scikit-learn-1.3.2 scipy-1.15.3 seaborn-0.13.0 six-1.17.0 sounddevice-0.5.5 tensorboard-2.15.2 tensorboard-data-server-0.7.2 tensorflow-2.15.0 tensorflow-estimator-2.15.0 tensorflow-intel-2.15.0 tensorflow-io-gcs-filesystem-0.31.0 termcolor-3.3.0 threadpoolctl-3.6.0 typing-extensions-4.15.0 tzdata-2025.3 urllib3-2.6.3 werkzeug-3.1.5 wrapt-1.14.2
+(hand_gesture) PS C:\Users\Utilizador\OneDrive - Instituto Politécnico de Tomar\Desktop\Aprendizagem Computacional\Proj2_Classification> cd "C:\Users\Utilizador\OneDrive - Instituto Politécnico de Tomar\Desktop\Aprendizagem Computacional\Proj2_Classification\1_2_a_and_1_2_b"
+(hand_gesture) PS C:\Users\Utilizador\OneDrive - Instituto Politécnico de Tomar\Desktop\Aprendizagem Computacional\Proj2_Classification\1_2_a_and_1_2_b> python .\train_models.py
+2026-02-06 23:50:20.771909: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+WARNING:tensorflow:From C:\Users\Utilizador\anaconda3\envs\hand_gesture\lib\site-packages\keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+============================================================
+Hand Gesture Classification - Complete Training Pipeline
+Parts I.2.a) and I.2.b)
+============================================================
+
+Dataset path: ..\Videos_Datasets
+Using coordinates: (x, y)
+Sequence length (CNN): 30
+Training clips: [1, 2, 3, 4]
+Testing clips: [5, 6]
+
+============================================================
+LOADING DATASET (Single Pass for All Models)
+============================================================
+Loading dataset and extracting features for ALL models (single pass)...
+
+Processing subject: subject_Antonio_Goncalves
+  - Gesture: open_palm
+    Processing clip 1: clip_01.mp4
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: closed_hand
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: v_shape
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_right
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_left
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: thumbs_up
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+
+Processing subject: subject_Beatriz
+  - Gesture: open_palm
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: closed_hand
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: v_shape
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_right
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_left
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: thumbs_up
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+
+Processing subject: subject_Cristiane
+  - Gesture: open_palm
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: closed_hand
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: v_shape
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_right
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_left
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: thumbs_up
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+
+Processing subject: subject_goncalo
+  - Gesture: open_palm
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: closed_hand
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: v_shape
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_right
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_left
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: thumbs_up
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+
+Processing subject: subject_guilherme
+  - Gesture: open_palm
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: closed_hand
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: v_shape
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_right
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_left
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: thumbs_up
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+
+Processing subject: subject_Jessica
+  - Gesture: open_palm
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: closed_hand
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: v_shape
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_right
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_left
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: thumbs_up
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+
+Processing subject: subject_João_Alves
+  - Gesture: open_palm
+    Processing clip 1: clip_1.mp4
+    Processing clip 2: clip_2.mp4
+    Processing clip 3: clip_3.mp4
+    Processing clip 4: clip_4.mp4
+    Processing clip 5: clip_5.mp4
+    Processing clip 6: clip_6.mp4
+  - Gesture: closed_hand
+    Processing clip 1: clip_1.mp4
+    Processing clip 2: clip_2.mp4
+    Processing clip 3: clip_3.mp4
+    Processing clip 4: clip_4.mp4
+    Processing clip 5: clip_5.mp4
+    Processing clip 6: clip_6.mp4
+  - Gesture: v_shape
+    Processing clip 1: clip_1.mp4
+    Processing clip 2: clip_2.mp4
+    Processing clip 3: clip_3.mp4
+    Processing clip 4: clip_4.mp4
+    Processing clip 5: clip_5.mp4
+    Processing clip 6: clip_6.mp4
+  - Gesture: hand_right
+    Processing clip 1: clip_1.mp4
+    Processing clip 2: clip_2.mp4
+    Processing clip 3: clip_3.mp4
+    Processing clip 4: clip_4.mp4
+    Processing clip 5: clip_5.mp4
+    Processing clip 6: clip_6.mp4
+  - Gesture: hand_left
+    Processing clip 1: clip_1.mp4
+    Processing clip 2: clip_2.mp4
+    Processing clip 3: clip_3.mp4
+    Processing clip 4: clip_4.mp4
+    Processing clip 5: clip_5.mp4
+    Processing clip 6: clip_6.mp4
+  - Gesture: thumbs_up
+    Processing clip 1: clip_1.mp4
+    Processing clip 2: clip_2.mp4
+    Processing clip 3: clip_3.mp4
+    Processing clip 4: clip_4.mp4
+    Processing clip 5: clip_5.mp4
+    Processing clip 6: clip_6.mp4
+
+Processing subject: subject_joão_joaquim
+  - Gesture: open_palm
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: closed_hand
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: v_shape
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_right
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_left
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: thumbs_up
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+
+Processing subject: subject_Ruben Dias
+  - Gesture: open_palm
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: closed_hand
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: v_shape
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_right
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: hand_left
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+  - Gesture: thumbs_up
+    Processing clip 1: clip_01.mp4
+    Processing clip 2: clip_02.mp4
+    Processing clip 3: clip_03.mp4
+    Processing clip 4: clip_04.mp4
+    Processing clip 5: clip_05.mp4
+    Processing clip 6: clip_06.mp4
+
+Dataset loaded (single pass):
+  Classic models - Training: 42948, Testing: 21125
+  CNN model - Training: 216, Testing: 108
+
+============================================================
+PHASE 1: CLASSIC ML MODELS (SVM, KNN, Random Forest)
+============================================================
+
+============================================================
+Dataset Statistics (Classic Models)
+============================================================
+Number of features: 42
+Training samples: 42948
+Testing samples: 21125
+Number of classes: 6
+
+Training class distribution:
+  v_shape: 7323 samples
+  hand_left: 7293 samples
+  hand_right: 7186 samples
+  thumbs_up: 7124 samples
+  open_palm: 7039 samples
+  closed_hand: 6983 samples
+
+Standardizing features...
+Scaler saved to models\scaler.pkl
+
+============================================================
+Training SVM...
+============================================================
+
+Accuracy: 0.9875
+
+Classification Report:
+              precision    recall  f1-score   support
+
+   open_palm       0.99      0.96      0.98      3482
+ closed_hand       0.99      0.99      0.99      3516
+     v_shape       0.99      0.98      0.99      3515
+  hand_right       0.97      1.00      0.98      3549
+   hand_left       1.00      1.00      1.00      3538
+   thumbs_up       0.99      1.00      0.99      3525
+
+    accuracy                           0.99     21125
+   macro avg       0.99      0.99      0.99     21125
+weighted avg       0.99      0.99      0.99     21125
+
+Confusion matrix saved to models\confusion_matrix_svm.png
+Model saved to models\svm_model.pkl
+
+============================================================
+Training KNN...
+============================================================
+
+Accuracy: 0.9590
+
+Classification Report:
+              precision    recall  f1-score   support
+
+   open_palm       0.96      0.94      0.95      3482
+ closed_hand       0.96      0.95      0.95      3516
+     v_shape       0.99      0.92      0.95      3515
+  hand_right       0.96      0.96      0.96      3549
+   hand_left       0.97      0.99      0.98      3538
+   thumbs_up       0.92      0.98      0.95      3525
+
+    accuracy                           0.96     21125
+   macro avg       0.96      0.96      0.96     21125
+weighted avg       0.96      0.96      0.96     21125
+
+Confusion matrix saved to models\confusion_matrix_knn.png
+Model saved to models\knn_model.pkl
+
+============================================================
+Training RandomForest...
+============================================================
+
+Accuracy: 0.9600
+
+Classification Report:
+              precision    recall  f1-score   support
+
+   open_palm       0.99      0.94      0.97      3482
+ closed_hand       0.98      0.95      0.96      3516
+     v_shape       1.00      0.97      0.98      3515
+  hand_right       0.96      0.95      0.95      3549
+   hand_left       0.97      0.99      0.98      3538
+   thumbs_up       0.88      0.97      0.93      3525
+
+    accuracy                           0.96     21125
+   macro avg       0.96      0.96      0.96     21125
+weighted avg       0.96      0.96      0.96     21125
+
+Confusion matrix saved to models\confusion_matrix_randomforest.png
+Model saved to models\randomforest_model.pkl
+
+============================================================
+Classic Models Comparison Summary
+============================================================
+SVM            : Accuracy = 0.9875
+KNN            : Accuracy = 0.9590
+RandomForest   : Accuracy = 0.9600
+
+Comparison plot saved to models\model_comparison_classic.png
+
+============================================================
+PHASE 2: DEEP LEARNING MODEL (CNN-1D)
+============================================================
+
+============================================================
+Dataset Statistics (CNN Model)
+============================================================
+Sequence length: 30
+Features per frame: 42
+Training samples: 216
+Testing samples: 108
+Number of classes: 6
+
+============================================================
+Training CNN-1D Model...
+============================================================
+2026-02-07 00:54:44.320768: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: SSE SSE2 SSE3 SSE4.1 SSE4.2 AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #
+=================================================================
+ conv1d (Conv1D)             (None, 30, 64)            8128
+
+ batch_normalization (Batch  (None, 30, 64)            256
+ Normalization)
+
+ max_pooling1d (MaxPooling1  (None, 15, 64)            0
+ D)
+
+ conv1d_1 (Conv1D)           (None, 15, 128)           24704
+
+ batch_normalization_1 (Bat  (None, 15, 128)           512
+ chNormalization)
+
+ max_pooling1d_1 (MaxPoolin  (None, 7, 128)            0
+ g1D)
+
+ dropout (Dropout)           (None, 7, 128)            0
+
+ conv1d_2 (Conv1D)           (None, 7, 256)            98560
+
+ global_average_pooling1d (  (None, 256)               0
+ GlobalAveragePooling1D)
+
+ dense (Dense)               (None, 128)               32896
+
+ dropout_1 (Dropout)         (None, 128)               0
+
+ dense_1 (Dense)             (None, 6)                 774
+
+=================================================================
+Total params: 165830 (647.77 KB)
+Trainable params: 165446 (646.27 KB)
+Non-trainable params: 384 (1.50 KB)
+_________________________________________________________________
+Epoch 1/50
+11/11 [==============================] - 3s 55ms/step - loss: 1.2086 - accuracy: 0.5581 - val_loss: 1.6817 - val_accuracy: 0.2727
+Epoch 2/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.5110 - accuracy: 0.8256 - val_loss: 1.6290 - val_accuracy: 0.3636
+Epoch 3/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.3094 - accuracy: 0.8895 - val_loss: 1.5893 - val_accuracy: 0.1818
+Epoch 4/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.1622 - accuracy: 0.9593 - val_loss: 1.4547 - val_accuracy: 0.6818
+Epoch 5/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.2250 - accuracy: 0.9302 - val_loss: 1.4255 - val_accuracy: 0.6591
+Epoch 6/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.1999 - accuracy: 0.9128 - val_loss: 1.3985 - val_accuracy: 0.5909
+Epoch 7/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.2301 - accuracy: 0.9070 - val_loss: 1.3486 - val_accuracy: 0.7045
+Epoch 8/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.2011 - accuracy: 0.9419 - val_loss: 1.2960 - val_accuracy: 0.6136
+Epoch 9/50
+11/11 [==============================] - 0s 17ms/step - loss: 0.1487 - accuracy: 0.9593 - val_loss: 1.2178 - val_accuracy: 0.5227
+Epoch 10/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.1388 - accuracy: 0.9593 - val_loss: 1.1712 - val_accuracy: 0.5227
+Epoch 11/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.1482 - accuracy: 0.9360 - val_loss: 1.1251 - val_accuracy: 0.5000
+Epoch 12/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.1843 - accuracy: 0.9360 - val_loss: 0.8744 - val_accuracy: 0.8182
+Epoch 13/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.2786 - accuracy: 0.9128 - val_loss: 1.1206 - val_accuracy: 0.5682
+Epoch 14/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.1101 - accuracy: 0.9535 - val_loss: 1.1476 - val_accuracy: 0.5909
+Epoch 15/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.2384 - accuracy: 0.9419 - val_loss: 0.6536 - val_accuracy: 0.7500
+Epoch 16/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.1566 - accuracy: 0.9477 - val_loss: 1.2618 - val_accuracy: 0.3636
+Epoch 17/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.1285 - accuracy: 0.9593 - val_loss: 0.8200 - val_accuracy: 0.8182
+Epoch 18/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.1086 - accuracy: 0.9651 - val_loss: 0.9566 - val_accuracy: 0.6364
+Epoch 19/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.1241 - accuracy: 0.9709 - val_loss: 0.5983 - val_accuracy: 0.8409
+Epoch 20/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.0801 - accuracy: 0.9651 - val_loss: 0.7433 - val_accuracy: 0.7727
+Epoch 21/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.0910 - accuracy: 0.9709 - val_loss: 0.8910 - val_accuracy: 0.6364
+Epoch 22/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.0915 - accuracy: 0.9535 - val_loss: 0.4591 - val_accuracy: 0.8409
+Epoch 23/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.1609 - accuracy: 0.9535 - val_loss: 0.9918 - val_accuracy: 0.6136
+Epoch 24/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.2670 - accuracy: 0.9477 - val_loss: 0.5786 - val_accuracy: 0.7045
+Epoch 25/50
+11/11 [==============================] - 0s 16ms/step - loss: 0.1265 - accuracy: 0.9535 - val_loss: 0.3192 - val_accuracy: 0.9318
+Epoch 26/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.0918 - accuracy: 0.9535 - val_loss: 0.5392 - val_accuracy: 0.8409
+Epoch 27/50
+11/11 [==============================] - 0s 17ms/step - loss: 0.0879 - accuracy: 0.9593 - val_loss: 0.3013 - val_accuracy: 0.8864
+Epoch 28/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.0815 - accuracy: 0.9826 - val_loss: 0.0856 - val_accuracy: 1.0000
+Epoch 29/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.0987 - accuracy: 0.9651 - val_loss: 0.5649 - val_accuracy: 0.7727
+Epoch 30/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.2056 - accuracy: 0.9302 - val_loss: 0.7138 - val_accuracy: 0.7045
+Epoch 31/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.3339 - accuracy: 0.9128 - val_loss: 1.9590 - val_accuracy: 0.5227
+Epoch 32/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.4059 - accuracy: 0.8953 - val_loss: 1.4236 - val_accuracy: 0.6364
+Epoch 33/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.2453 - accuracy: 0.9360 - val_loss: 1.9943 - val_accuracy: 0.4773
+Epoch 34/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.1379 - accuracy: 0.9477 - val_loss: 0.7976 - val_accuracy: 0.7500
+Epoch 35/50
+11/11 [==============================] - 0s 15ms/step - loss: 0.2125 - accuracy: 0.9244 - val_loss: 1.9870 - val_accuracy: 0.3636
+Epoch 36/50
+11/11 [==============================] - 0s 17ms/step - loss: 0.1789 - accuracy: 0.9302 - val_loss: 0.8731 - val_accuracy: 0.7727
+4/4 [==============================] - 0s 5ms/step
+
+Accuracy: 0.9722
+
+Classification Report:
+              precision    recall  f1-score   support
+
+   open_palm       1.00      1.00      1.00        18
+ closed_hand       1.00      0.89      0.94        18
+     v_shape       1.00      1.00      1.00        18
+  hand_right       1.00      0.94      0.97        18
+   hand_left       1.00      1.00      1.00        18
+   thumbs_up       0.86      1.00      0.92        18
+
+    accuracy                           0.97       108
+   macro avg       0.98      0.97      0.97       108
+weighted avg       0.98      0.97      0.97       108
+
+Confusion matrix saved to models\confusion_matrix_cnn1d.png
+
+CNN-1D Model saved to models\cnn1d_model.keras
+Training history saved to models\training_history_cnn.png
+
+============================================================
+TRAINING COMPLETE - SUMMARY
+============================================================
+
+All models and artifacts saved to 'models/' folder:
+
+Classic ML Models:
+  - scaler.pkl (feature scaler)
+  - svm_model.pkl (SVM classifier)
+  - knn_model.pkl (KNN classifier)
+  - randomforest_model.pkl (Random Forest classifier)
+  - confusion_matrix_*.png (confusion matrices)
+  - model_comparison_classic.png (accuracy comparison)
+
+Deep Learning Model:
+  - cnn1d_model.keras (CNN-1D classifier)
+  - confusion_matrix_cnn1d.png (confusion matrix)
+  - training_history_cnn.png (training curves)

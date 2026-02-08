@@ -1,0 +1,12 @@
+Training samples: 216
+Testing samples: 108
+
+Executing experiment with XY relative to the wrist...
+Accuracy (xy): 1.0000
+
+Executing experiment with XYZ relative to the wrist...
+Accuracy (xyz): 1.0000
+
+Best model: xy with accuracy 1.0000
+
+Best model saved for mode: xy

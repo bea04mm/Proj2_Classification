@@ -19,7 +19,7 @@ mp_drawing_styles = mp.solutions.drawing_styles
 class OnlineGestureClassifier:
     """Real-time hand gesture classifier using trained models"""
 
-    def __init__(self, model_path, scaler_path, use_z_coord=False):
+    def __init__(self, model_path, scaler_path, use_z_coord=False, relative_to_wrist=False):
         """
         Initialize the online classifier
 
@@ -27,10 +27,12 @@ class OnlineGestureClassifier:
             model_path: Path to the trained model (.pkl file)
             scaler_path: Path to the scaler (.pkl file)
             use_z_coord: Whether to use (x,y,z) or just (x,y) coordinates
+            relative_to_wrist: Whether to use coordinates relative to the wrist
         """
         self.model = joblib.load(model_path)
         self.scaler = joblib.load(scaler_path)
         self.use_z_coord = use_z_coord
+        self.relative_to_wrist = relative_to_wrist
 
         self.gesture_names = [
             "open_palm",
@@ -64,10 +66,23 @@ class OnlineGestureClassifier:
         Returns:
             Flattened numpy array of landmarks
         """
-        if self.use_z_coord:
-            landmarks = [[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark]
+        if self.relative_to_wrist:
+            wrist = hand_landmarks.landmark[0]
+            if self.use_z_coord:
+                landmarks = [
+                    [lm.x - wrist.x, lm.y - wrist.y, lm.z - wrist.z]
+                    for lm in hand_landmarks.landmark
+                ]
+            else:
+                landmarks = [
+                    [lm.x - wrist.x, lm.y - wrist.y]
+                    for lm in hand_landmarks.landmark
+                ]
         else:
-            landmarks = [[lm.x, lm.y] for lm in hand_landmarks.landmark]
+            if self.use_z_coord:
+                landmarks = [[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark]
+            else:
+                landmarks = [[lm.x, lm.y] for lm in hand_landmarks.landmark]
 
         return np.array(landmarks).flatten()
 
@@ -245,8 +260,33 @@ class OnlineGestureClassifier:
 def main():
     """Main function to run online classification"""
 
-    # Configuration
-    MODELS_DIR = Path("../1_2_a_and_1_2_b/models")
+    print("=" * 60)
+    print("ONLINE HAND GESTURE CLASSIFICATION")
+    print("Part I.2.c) - Classic ML Models")
+    print("=" * 60)
+
+    # Available model directories
+    model_directories = {
+        "1": ("Classic Models: XY Coordinates", Path("../1_2_a/models_comparison/xy")),
+        "2": ("Classic Models: XYZ Coordinates", Path("../1_2_a/models_comparison/xyz")),
+        "3": ("Classic Models V2: XY Coordinates", Path("../1_2_a/models_comparison_rel_wrist/xy")),
+        "4": ("Classic Models V2: XYZ Coordinates", Path("../1_2_a/models_comparison_rel_wrist/xyz")),
+    }
+
+    print("\nAvailable model directories:")
+    for key, (dir_name, dir_path) in model_directories.items():
+        print(f"  {key}. {dir_name} - {dir_path}")
+
+    # Select directory
+    while True:
+        dir_choice = input("\nSelect model directory (1-4): ").strip()
+        if dir_choice in model_directories:
+            selected_dir_name, MODELS_DIR = model_directories[dir_choice]
+            print(f"\nUsing models from: {MODELS_DIR}")
+            break
+        else:
+            print("Invalid choice. Please select 1, 2, 3, or 4.")
+
     SCALER_PATH = MODELS_DIR / "scaler.pkl"
 
     # Available models
@@ -256,45 +296,46 @@ def main():
         "3": ("RandomForest", MODELS_DIR / "randomforest_model.pkl"),
     }
 
-    print("=" * 60)
-    print("ONLINE HAND GESTURE CLASSIFICATION")
-    print("Part I.2.c) - Classic ML Models")
-    print("=" * 60)
     print("\nAvailable models:")
     for key, (name, path) in models.items():
         print(f"  {key}. {name}")
 
     # Select model
     while True:
-        choice = input("\nSelect model (1-3) to test the models: ").strip().lower()
+        choice = input("\nSelect model (1-3): ").strip().lower()
 
         if choice in models:
             name, model_path = models[choice]
 
             if not model_path.exists():
                 print(f"Error: Model file not found: {model_path}")
-                print(
-                    "Please run the training script first (1_2_a_and_1_2_b/train_classic_models.py)"
-                )
+                print(f"Please run the training script first from the {selected_dir_name} directory")
                 return
 
             if not SCALER_PATH.exists():
                 print(f"Error: Scaler file not found: {SCALER_PATH}")
-                print(
-                    "Please run the training script first (1_2_a_and_1_2_b/train_classic_models.py)"
-                )
+                print(f"Please run the training script first from the {selected_dir_name} directory")
                 return
+
+            # Determine if we should use z coordinate based on the selected directory
+            use_z_coord = "xyz" in str(MODELS_DIR).lower()
+            relative_to_wrist = "rel_wrist" in str(MODELS_DIR)
+            print(f"Using {'XYZ' if use_z_coord else 'XY'} coordinates")
+            print(f"Relative to wrist: {'Yes' if relative_to_wrist else 'No'}")
 
             # Create classifier
             classifier = OnlineGestureClassifier(
-                model_path=model_path, scaler_path=SCALER_PATH, use_z_coord=False
+                model_path=model_path,
+                scaler_path=SCALER_PATH,
+                use_z_coord=use_z_coord,
+                relative_to_wrist=relative_to_wrist
             )
 
             # Run online classification
             classifier.run(camera_id=0, display_fps=True)
             break
         else:
-            print("Invalid choice. Please select 1, 2 or 3.")
+            print("Invalid choice. Please select 1, 2, 3, or 4.")
 
 
 if __name__ == "__main__":

@@ -1,20 +1,28 @@
+"""
+Script for Training CNN-1D Model
+Extracts hand landmarks using MediaPipe and trains a CNN-1D.
+Tests two configurations:
+  1) Only (x, y)
+  2) (x, y, z)
+Compares the results and saves the best model.
+"""
+
 import os
 import cv2
 import mediapipe as mp
 import numpy as np
 from pathlib import Path
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import confusion_matrix, accuracy_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import tensorflow as tf
 from tensorflow.keras import layers, models, callbacks
-import joblib
 
 mp_hands = mp.solutions.hands
 
 
 class HandGestureSequenceExtractor:
-    """Extrai sequências de landmarks de vídeos"""
+    """Extracts sequences of landmarks from videos"""
 
     def __init__(self, dataset_path, use_z_coord=False, seq_len=30):
         self.dataset_path = Path(dataset_path)
@@ -71,27 +79,43 @@ class HandGestureSequenceExtractor:
 
     def load_dataset(self, train_clips=[1, 2, 3, 4], test_clips=[5, 6]):
         X_train, y_train, X_test, y_test = [], [], [], []
+        
+        print("Loading dataset and extracting sequences...")
+        
         for subject_folder in self.dataset_path.iterdir():
             if not subject_folder.is_dir() or subject_folder.name == "__pycache__":
                 continue
+            
+            print(f"\nProcessing subject: {subject_folder.name}")
+            
             for gesture_name, gesture_label in self.gesture_mapping.items():
                 gesture_folder = subject_folder / gesture_name
                 if not gesture_folder.exists():
                     continue
+                
+                print(f"  - Gesture: {gesture_name}")
+                
                 video_files = sorted(
                     list(gesture_folder.glob("*.avi"))
                     + list(gesture_folder.glob("*.mp4"))
                 )
                 for idx, video_file in enumerate(video_files, start=1):
+                    print(f"    Clip {idx}: {video_file.name}")
                     sequence = self.extract_sequence_from_video(video_file)
                     if sequence is None:
+                        print(f"    Warning: No landmarks in {video_file.name}")
                         continue
+
                     if idx in train_clips:
                         X_train.append(sequence)
                         y_train.append(gesture_label)
                     elif idx in test_clips:
                         X_test.append(sequence)
                         y_test.append(gesture_label)
+     
+        print(f"\nTraining samples: {len(X_train)}")
+        print(f"Testing samples: {len(X_test)}")
+        
         return (
             np.array(X_train, dtype=np.float32),
             np.array(X_test, dtype=np.float32),
@@ -128,20 +152,23 @@ def build_cnn1d_model(input_shape, num_classes, dropout1=0.3, dropout2=0.4):
 
 def train_and_evaluate_cnn(X_train, X_test, y_train, y_test, output_dir):
     output_path = Path(output_dir)
-    output_path.mkdir(exist_ok=True)
+    output_path.mkdir(parents=True, exist_ok=True)
     num_classes = len(np.unique(y_train))
     input_shape = X_train.shape[1:]
     model = build_cnn1d_model(input_shape, num_classes)
     early_stop = callbacks.EarlyStopping(
-        monitor="val_loss", patience=8, restore_best_weights=True
+        monitor="val_loss", patience=15, restore_best_weights=True
+    )
+    reduce_lr = callbacks.ReduceLROnPlateau(
+        monitor="val_loss", factor=0.5, patience=5, min_lr=1e-6, verbose=1
     )
     history = model.fit(
         X_train,
         y_train,
         validation_split=0.2,
-        epochs=50,
+        epochs=100,
         batch_size=16,
-        callbacks=[early_stop],
+        callbacks=[early_stop, reduce_lr],
         verbose=1,
     )
     y_pred = np.argmax(model.predict(X_test), axis=1)
@@ -175,25 +202,41 @@ def train_and_evaluate_cnn(X_train, X_test, y_train, y_test, output_dir):
     return {"accuracy": accuracy, "model_path": model_path, "history": history}
 
 
-def run_experiment(dataset_path, output_base_dir):
+def remove_z_coordinate(X):
+    """Removes the z coordinate from sequence feature vectors"""
+    # X shape: (samples, seq_len, features)
+    # features = 21 landmarks * 3 coords = 63
+    n_samples, seq_len, features = X.shape
+    n_landmarks = 21
+    X_reshaped = X.reshape(n_samples, seq_len, n_landmarks, 3)
+    X_xy = X_reshaped[:, :, :, :2]  # Keep only x,y
+    return X_xy.reshape(n_samples, seq_len, -1)
+
+
+def run_experiment(X_train, X_test, y_train, y_test, output_base_dir):
     results = {}
     for use_z in [False, True]:
         mode_name = "xy" if not use_z else "xyz"
         output_dir = Path(output_base_dir) / mode_name
-        extractor = HandGestureSequenceExtractor(
-            dataset_path, use_z_coord=use_z, seq_len=30
-        )
-        X_train, X_test, y_train, y_test = extractor.load_dataset()
-        if len(X_train) == 0 or len(X_test) == 0:
+        
+        # If we don't want z, remove it from the data
+        if not use_z:
+            X_train_exp = remove_z_coordinate(X_train)
+            X_test_exp = remove_z_coordinate(X_test)
+        else:
+            X_train_exp = X_train
+            X_test_exp = X_test
+        
+        if len(X_train_exp) == 0 or len(X_test_exp) == 0:
             continue
-        print(f"\nExecutando experiência com coordenadas {mode_name.upper()}...")
+        print(f"\nExecuting experiment with {mode_name.upper()} coordinates...")
         results[mode_name] = train_and_evaluate_cnn(
-            X_train, X_test, y_train, y_test, output_dir
+            X_train_exp, X_test_exp, y_train, y_test, output_dir
         )
         print(f"Accuracy ({mode_name}): {results[mode_name]['accuracy']:.4f}")
     best_mode = max(results, key=lambda k: results[k]["accuracy"])
     print(
-        f"\nMelhor modelo: {best_mode} com accuracy {results[best_mode]['accuracy']:.4f}"
+        f"\nBest model: {best_mode} with accuracy {results[best_mode]['accuracy']:.4f}"
     )
     return results, best_mode
 
@@ -202,10 +245,18 @@ def main():
     DATASET_PATH = Path("../Videos_Datasets")
     OUTPUT_DIR = "cnn_models_comparison"
     if not DATASET_PATH.exists():
-        print(f"Dataset não encontrado em {DATASET_PATH}!")
+        print(f"Dataset not found at {DATASET_PATH}!")
         return
-    results, best_mode = run_experiment(DATASET_PATH, OUTPUT_DIR)
-    print(f"\nMelhor modelo guardado para o modo: {best_mode}")
+    
+    # Extract dataset once with (x, y, z)
+    print("\nExtracting dataset (only once with x,y,z coordinates)...")
+    extractor = HandGestureSequenceExtractor(
+        DATASET_PATH, use_z_coord=True, seq_len=30
+    )
+    X_train, X_test, y_train, y_test = extractor.load_dataset()
+    
+    results, best_mode = run_experiment(X_train, X_test, y_train, y_test, OUTPUT_DIR)
+    print(f"\nBest model saved for mode: {best_mode}")
 
 
 if __name__ == "__main__":

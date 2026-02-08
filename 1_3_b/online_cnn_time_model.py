@@ -15,8 +15,8 @@ import tempfile
 
 # Initialize MediaPipe Hands
 mp_hands = mp.solutions.hands
-mp_drawing = mp.drawing_utils
-mp_drawing_styles = mp.drawing_styles
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
 
 
 class OnlineGestureClassifierCNNTimeSeries:
@@ -371,24 +371,46 @@ class OnlineGestureClassifierCNNTimeSeries:
 def main():
     """Main function to run online classification with time series"""
 
-    # Configuration
-    MODELS_DIR = Path("../1_3_a/models")
-    MODEL_PATH = MODELS_DIR / "cnn1d_model.keras"
-
-    # Time-series configuration
-    USE_Z_COORD = False
-    SEQ_LEN = 30
-    INCLUDE_DELTAS = True
-    NORMALIZE_SEQUENCE = True
-
     print("=" * 60)
     print("ONLINE HAND GESTURE CLASSIFICATION")
     print("Part I.3.b) - CNN-1D Time Series Model")
     print("=" * 60)
 
+    # Available model directories
+    model_directories = {
+        "1": ("CNN-1D Time Series: XY Coordinates", Path("../1_3_a/cnn_models_v2_absolute/xy")),
+        "2": ("CNN-1D Time Series: XYZ Coordinates", Path("../1_3_a/cnn_models_v2_absolute/xyz")),
+        "3": ("CNN-1D Time Series v2: XY Coordinates", Path("../1_3_a/cnn_models_v2_relative/xy")),
+        "4": ("CNN-1D Time Series v2: XYZ Coordinates", Path("../1_3_a/cnn_models_v2_relative/xyz")),
+    }
+
+    print("\nAvailable model directories:")
+    for key, (dir_name, dir_path) in model_directories.items():
+        print(f"  {key}. {dir_name} - {dir_path}")
+
+    # Select directory
+    while True:
+        dir_choice = input("\nSelect model directory (1-4): ").strip()
+        if dir_choice in model_directories:
+            selected_dir_name, MODELS_DIR = model_directories[dir_choice]
+            print(f"\nUsing model from: {MODELS_DIR}")
+            break
+        else:
+            print("Invalid choice. Please select 1, 2, 3, or 4.")
+
+    # Determine coordinate mode from directory path (xy or xyz)
+    mode_name = MODELS_DIR.name  # Gets 'xy' or 'xyz'
+    MODEL_PATH = MODELS_DIR / f"cnn1d_grid_{mode_name}.keras"
+
+    # Time-series configuration based on mode
+    USE_Z_COORD = (mode_name == "xyz")
+    SEQ_LEN = 30
+    INCLUDE_DELTAS = True
+    NORMALIZE_SEQUENCE = True
+
     if not MODEL_PATH.exists():
         print(f"\nError: Model file not found: {MODEL_PATH}")
-        print("Please run the training script first (1_3_a/train_cnn_time_model.py)")
+        print(f"Please run the training script first from the {selected_dir_name} directory")
         return
 
     # Resolve absolute path to handle special characters in Windows paths

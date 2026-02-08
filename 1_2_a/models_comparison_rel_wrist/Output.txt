@@ -1,0 +1,83 @@
+Training samples: 42948
+Testing samples: 21125
+
+============================================================
+Running experiment with coordinates: XY
+============================================================
+
+Normalizing features...
+
+============================================================
+Training SVM with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'C': 1, 'gamma': 'auto', 'kernel': 'rbf'}
+Accuracy: 0.9905
+
+============================================================
+Training KNN with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'n_neighbors': 3, 'weights': 'uniform'}
+Accuracy: 0.9846
+
+============================================================
+Training RandomForest with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'max_depth': 20, 'n_estimators': 100}
+Accuracy: 0.9742
+
+============================================================
+Running experiment with coordinates: XYZ
+============================================================
+
+Normalizing features...
+
+============================================================
+Training SVM with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'C': 10, 'gamma': 'auto', 'kernel': 'rbf'}
+Accuracy: 0.9896
+
+============================================================
+Training KNN with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'n_neighbors': 3, 'weights': 'uniform'}
+Accuracy: 0.9805
+
+============================================================
+Training RandomForest with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'max_depth': 10, 'n_estimators': 100}
+Accuracy: 0.9752
+
+============================================================
+Final Comparison
+============================================================
+
+Model: SVM
+  Accuracy (x,y):   0.9905
+  Accuracy (x,y,z): 0.9896
+  -> Better without Z
+
+Model: KNN
+  Accuracy (x,y):   0.9846
+  Accuracy (x,y,z): 0.9805
+  -> Better without Z
+
+Model: RandomForest
+  Accuracy (x,y):   0.9742
+  Accuracy (x,y,z): 0.9752
+  -> Better with Z
+
+============================================================
+Best Overall Model
+============================================================
+Mode: xy
+Model: SVM
+Accuracy: 0.9905
+Best model saved at: models_comparison_rel_wrist\best_model.pkl

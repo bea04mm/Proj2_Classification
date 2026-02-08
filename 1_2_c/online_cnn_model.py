@@ -22,7 +22,7 @@ mp_drawing_styles = mp.solutions.drawing_styles
 class OnlineGestureClassifierCNN:
     """Real-time hand gesture classifier using CNN-1D model"""
 
-    def __init__(self, model_path, use_z_coord=False, seq_len=30):
+    def __init__(self, model_path, use_z_coord=False, seq_len=30, relative_to_wrist=False):
         """
         Initialize the online classifier
 
@@ -30,6 +30,7 @@ class OnlineGestureClassifierCNN:
             model_path: Path to the trained model (.keras file)
             use_z_coord: Whether to use (x,y,z) or just (x,y) coordinates
             seq_len: Number of frames per sequence
+            relative_to_wrist: Whether to use coordinates relative to wrist
         """
         # Workaround for TensorFlow Unicode path issue on Windows
         # Copy model to a temporary location with ASCII-only path
@@ -43,6 +44,7 @@ class OnlineGestureClassifierCNN:
         self.temp_model_path = temp_model_path  # Store for cleanup
         self.use_z_coord = use_z_coord
         self.seq_len = seq_len
+        self.relative_to_wrist = relative_to_wrist
 
         self.gesture_names = [
             "open_palm",
@@ -68,6 +70,8 @@ class OnlineGestureClassifierCNN:
 
         print(f"Model loaded: {Path(model_path).name}")
         print(f"Model type: CNN-1D")
+        print(f"Coordinates: {'XYZ' if use_z_coord else 'XY'}")
+        print(f"Reference: {'Relative to wrist' if relative_to_wrist else 'Absolute'}")
         print(f"Sequence length: {seq_len}")
 
     def extract_landmarks(self, hand_landmarks):
@@ -80,10 +84,25 @@ class OnlineGestureClassifierCNN:
         Returns:
             Flattened numpy array of landmarks
         """
-        if self.use_z_coord:
-            landmarks = [[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark]
+        if self.relative_to_wrist:
+            # Extract landmarks relative to wrist (landmark 0)
+            wrist = hand_landmarks.landmark[0]
+            if self.use_z_coord:
+                landmarks = [
+                    [lm.x - wrist.x, lm.y - wrist.y, lm.z - wrist.z]
+                    for lm in hand_landmarks.landmark
+                ]
+            else:
+                landmarks = [
+                    [lm.x - wrist.x, lm.y - wrist.y]
+                    for lm in hand_landmarks.landmark
+                ]
         else:
-            landmarks = [[lm.x, lm.y] for lm in hand_landmarks.landmark]
+            # Extract absolute landmarks
+            if self.use_z_coord:
+                landmarks = [[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark]
+            else:
+                landmarks = [[lm.x, lm.y] for lm in hand_landmarks.landmark]
 
         return np.array(landmarks).flatten()
 
@@ -241,7 +260,7 @@ class OnlineGestureClassifierCNN:
                     )
 
                 # Display model info
-                model_info = "Model: CNN-1D"
+                model_info = f"Model: CNN-1D {'(Rel. Wrist)' if self.relative_to_wrist else ''}"
                 cv2.putText(
                     frame,
                     model_info,
@@ -315,18 +334,38 @@ class OnlineGestureClassifierCNN:
 def main():
     """Main function to run online classification"""
 
-    # Configuration
-    MODELS_DIR = Path("../1_2_a_and_1_2_b/models")
-    MODEL_PATH = MODELS_DIR / "cnn1d_model.keras"
-
     print("=" * 60)
     print("ONLINE HAND GESTURE CLASSIFICATION")
     print("Part I.2.c) - CNN-1D Model")
     print("=" * 60)
 
+    # Available model directories
+    model_directories = {
+        "1": ("CNN-1D: XY Coordinates", Path("../1_2_b/cnn_models_comparison/xy"), False, False),
+        "2": ("CNN-1D: XYZ Coordinates", Path("../1_2_b/cnn_models_comparison/xyz"), True, False),
+        "3": ("CNN-1D V2: XY Coordinates", Path("../1_2_b/cnn_models_rel_wrist/xy"), False, True),
+        "4": ("CNN-1D V2: XYZ Coordinates", Path("../1_2_b/cnn_models_rel_wrist/xyz"), True, True),
+    }
+
+    print("\nAvailable model directories:")
+    for key, (dir_name, dir_path, _, _) in model_directories.items():
+        print(f"  {key}. {dir_name} - {dir_path}")
+
+    # Select directory
+    while True:
+        dir_choice = input("\nSelect model directory (1-4): ").strip()
+        if dir_choice in model_directories:
+            selected_dir_name, MODELS_DIR, use_z_coord, relative_to_wrist = model_directories[dir_choice]
+            print(f"\nUsing model from: {MODELS_DIR}")
+            break
+        else:
+            print("Invalid choice. Please select 1, 2, 3, or 4.")
+
+    MODEL_PATH = MODELS_DIR / "cnn1d_model.keras"
+
     if not MODEL_PATH.exists():
         print(f"\nError: Model file not found: {MODEL_PATH}")
-        print("Please run the training script first (1_2_a_and_1_2_b/train_models.py)")
+        print(f"Please run the training script first from the {selected_dir_name} directory")
         return
 
     # Resolve absolute path to handle special characters in Windows paths
@@ -334,7 +373,10 @@ def main():
 
     # Create classifier
     classifier = OnlineGestureClassifierCNN(
-        model_path=MODEL_PATH, use_z_coord=False, seq_len=30
+        model_path=MODEL_PATH, 
+        use_z_coord=use_z_coord, 
+        seq_len=30,
+        relative_to_wrist=relative_to_wrist
     )
 
     # Run online classification

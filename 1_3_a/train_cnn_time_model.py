@@ -1,6 +1,6 @@
 """
-CNN-1D Training Script v2 - Coordenadas absolutas
-Compara XY vs XYZ e treina modelos separados usando GridSearch
+CNN-1D Training Script v2 - Absolute Coordinates
+Compare XY vs XYZ and train separate models using GridSearch
 """
 
 import os
@@ -8,30 +8,30 @@ import cv2
 import mediapipe as mp
 import numpy as np
 from pathlib import Path
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import confusion_matrix, accuracy_score
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
 import seaborn as sns
 import tensorflow as tf
-from tensorflow.keras import layers, models, callbacks
-from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
+from tensorflow.keras import layers, models
+from scikeras.wrappers import KerasClassifier
 from sklearn.model_selection import GridSearchCV
 
 mp_hands = mp.solutions.hands
 
 
 class HandGestureSequenceExtractor:
-    """Extrai sequências de landmarks da mão a partir de vídeos"""
+    """Extracts hand landmark sequences from videos"""
 
     def __init__(
         self,
         dataset_path,
-        use_z_coord=False,
         seq_len=30,
         include_deltas=True,
         normalize_sequence=True,
     ):
         self.dataset_path = Path(dataset_path)
-        self.use_z_coord = use_z_coord
         self.seq_len = seq_len
         self.include_deltas = include_deltas
         self.normalize_sequence = normalize_sequence
@@ -70,8 +70,10 @@ class HandGestureSequenceExtractor:
         return seq
 
     def extract_sequence_from_video(self, video_path):
+        """Extract both XY and XYZ sequences from a single video pass"""
         cap = cv2.VideoCapture(str(video_path))
-        frames_features = []
+        frames_features_xy = []
+        frames_features_xyz = []
         with mp_hands.Hands(
             static_image_mode=False,
             max_num_hands=1,
@@ -86,48 +88,80 @@ class HandGestureSequenceExtractor:
                 results = hands.process(frame_rgb)
                 if results.multi_hand_landmarks:
                     hand_landmarks = results.multi_hand_landmarks[0]
-                    if self.use_z_coord:
-                        landmarks = [
-                            [lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark
-                        ]
-                    else:
-                        landmarks = [[lm.x, lm.y] for lm in hand_landmarks.landmark]
-                    frames_features.append(np.array(landmarks).flatten())
+                    # Extract XY
+                    landmarks_xy = [[lm.x, lm.y] for lm in hand_landmarks.landmark]
+                    frames_features_xy.append(np.array(landmarks_xy).flatten())
+                    # Extract XYZ
+                    landmarks_xyz = [[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark]
+                    frames_features_xyz.append(np.array(landmarks_xyz).flatten())
         cap.release()
-        resampled = self._resample_sequence(frames_features, self.seq_len)
-        if resampled is None:
-            return None
-        return self._make_time_series_features(resampled)
+        
+        # Process XY
+        resampled_xy = self._resample_sequence(frames_features_xy, self.seq_len)
+        seq_xy = self._make_time_series_features(resampled_xy) if resampled_xy is not None else None
+        
+        # Process XYZ
+        resampled_xyz = self._resample_sequence(frames_features_xyz, self.seq_len)
+        seq_xyz = self._make_time_series_features(resampled_xyz) if resampled_xyz is not None else None
+        
+        return seq_xy, seq_xyz
 
     def load_dataset(self, train_clips=[1, 2, 3, 4], test_clips=[5, 6]):
-        X_train, y_train, X_test, y_test = [], [], [], []
+        """Load dataset extracting both XY and XYZ in one pass"""
+        X_train_xy, X_train_xyz = [], []
+        X_test_xy, X_test_xyz = [], []
+        y_train, y_test = [], []
+        
         for subject_folder in self.dataset_path.iterdir():
             if not subject_folder.is_dir() or subject_folder.name == "__pycache__":
                 continue
+
+            print(f"\nProcessing subject: {subject_folder.name}")
+
             for gesture_name, gesture_label in self.gesture_mapping.items():
                 gesture_folder = subject_folder / gesture_name
                 if not gesture_folder.exists():
                     continue
+
+                print(f"  - Gesture: {gesture_name}")
+
                 video_files = sorted(
                     list(gesture_folder.glob("*.avi"))
                     + list(gesture_folder.glob("*.mp4"))
                 )
                 for idx, video_file in enumerate(video_files, start=1):
-                    sequence = self.extract_sequence_from_video(video_file)
-                    if sequence is None:
+                    print(f"    Clip {idx}: {video_file.name}")
+                    seq_xy, seq_xyz = self.extract_sequence_from_video(video_file)
+                    if seq_xy is None or seq_xyz is None:
+                        print(f"    Warning: No landmarks in {video_file.name}")
                         continue
+
                     if idx in train_clips:
-                        X_train.append(sequence)
+                        X_train_xy.append(seq_xy)
+                        X_train_xyz.append(seq_xyz)
                         y_train.append(gesture_label)
                     elif idx in test_clips:
-                        X_test.append(sequence)
+                        X_test_xy.append(seq_xy)
+                        X_test_xyz.append(seq_xyz)
                         y_test.append(gesture_label)
-        return (
-            np.array(X_train, dtype=np.float32),
-            np.array(X_test, dtype=np.float32),
-            np.array(y_train, dtype=np.int32),
-            np.array(y_test, dtype=np.int32),
-        )
+        
+        print(f"\nTraining samples: {len(y_train)}")
+        print(f"Testing samples: {len(y_test)}")
+        
+        return {
+            'xy': (
+                np.array(X_train_xy, dtype=np.float32),
+                np.array(X_test_xy, dtype=np.float32),
+                np.array(y_train, dtype=np.int32),
+                np.array(y_test, dtype=np.int32),
+            ),
+            'xyz': (
+                np.array(X_train_xyz, dtype=np.float32),
+                np.array(X_test_xyz, dtype=np.float32),
+                np.array(y_train, dtype=np.int32),
+                np.array(y_test, dtype=np.int32),
+            )
+        }
 
 
 def build_cnn1d_model(
@@ -138,7 +172,7 @@ def build_cnn1d_model(
     dropout1=0.3,
     dropout2=0.4,
 ):
-    """Constrói um CNN-1D com parâmetros ajustáveis para GridSearch"""
+    """Build a CNN-1D model with adjustable parameters for GridSearch"""
     model = models.Sequential(
         [
             layers.Input(shape=input_shape),
@@ -167,14 +201,26 @@ def build_cnn1d_model(
 def train_with_gridsearch(
     X_train, y_train, X_test, y_test, input_shape, num_classes, output_dir, mode_name
 ):
-    """Treina CNN-1D com GridSearch para hiperparâmetros básicos"""
+    """Train CNN-1D with GridSearch for basic hyperparameters"""
+    
+    # Ensure output directory exists
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     def create_model(filters1=64, filters2=128, dropout1=0.3, dropout2=0.4):
         return build_cnn1d_model(
             input_shape, num_classes, filters1, filters2, dropout1, dropout2
         )
 
-    model = KerasClassifier(build_fn=create_model, epochs=50, batch_size=16, verbose=0)
+    model = KerasClassifier(
+        model=create_model,
+        epochs=50,
+        batch_size=16,
+        verbose=0,
+        filters1=64,
+        filters2=128,
+        dropout1=0.3,
+        dropout2=0.4
+    )
     param_grid = {
         "filters1": [32, 64],
         "filters2": [64, 128],
@@ -213,7 +259,7 @@ def train_with_gridsearch(
     plt.savefig(Path(output_dir) / f"confusion_matrix_{mode_name}.png")
     plt.close()
 
-    best_model.model.save(Path(output_dir) / f"cnn1d_grid_{mode_name}.keras")
+    best_model.model_.save(Path(output_dir) / f"cnn1d_grid_{mode_name}.keras")
     return accuracy
 
 
@@ -222,14 +268,18 @@ def main():
     OUTPUT_DIR = "cnn_models_v2_absolute"
     Path(OUTPUT_DIR).mkdir(exist_ok=True)
 
+    # Process videos only once, extract both XY and XYZ
+    print("Extracting sequences from videos (one pass for both XY and XYZ)...")
+    extractor = HandGestureSequenceExtractor(DATASET_PATH)
+    datasets = extractor.load_dataset()
+    
+    # Train both models
     results = {}
-    for use_z in [False, True]:
-        mode_name = "xy" if not use_z else "xyz"
-        extractor = HandGestureSequenceExtractor(DATASET_PATH, use_z_coord=use_z)
-        X_train, X_test, y_train, y_test = extractor.load_dataset()
+    for mode_name in ['xy', 'xyz']:
+        X_train, X_test, y_train, y_test = datasets[mode_name]
         if len(X_train) == 0 or len(X_test) == 0:
             continue
-        print(f"\nRunning experiment: {mode_name}")
+        print(f"\nTraining {mode_name.upper()} model...")
         acc = train_with_gridsearch(
             X_train,
             y_train,

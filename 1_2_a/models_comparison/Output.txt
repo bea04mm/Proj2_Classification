@@ -1,0 +1,173 @@
+Training samples: 42948
+Testing samples: 21125
+
+============================================================
+Running experiment with coordinates: XY
+============================================================
+
+Normalizing features...
+
+============================================================
+Training SVM with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'C': 1, 'gamma': 'scale', 'kernel': 'rbf'}
+Accuracy: 0.9858
+
+Classification Report:
+              precision    recall  f1-score   support
+
+   open_palm       1.00      0.96      0.98      3482
+ closed_hand       0.99      0.98      0.99      3516
+     v_shape       1.00      0.98      0.99      3515
+  hand_right       0.96      1.00      0.98      3549
+   hand_left       1.00      1.00      1.00      3538
+   thumbs_up       0.98      1.00      0.99      3525
+
+    accuracy                           0.99     21125
+   macro avg       0.99      0.99      0.99     21125
+weighted avg       0.99      0.99      0.99     21125
+
+
+============================================================
+Training KNN with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'n_neighbors': 3, 'weights': 'distance'}
+Accuracy: 0.9600
+
+Classification Report:
+              precision    recall  f1-score   support
+
+   open_palm       0.96      0.94      0.95      3482
+ closed_hand       0.96      0.95      0.95      3516
+     v_shape       0.99      0.92      0.96      3515
+  hand_right       0.96      0.97      0.96      3549
+   hand_left       0.97      1.00      0.99      3538
+   thumbs_up       0.92      0.98      0.95      3525
+
+    accuracy                           0.96     21125
+   macro avg       0.96      0.96      0.96     21125
+weighted avg       0.96      0.96      0.96     21125
+
+
+============================================================
+Training RandomForest with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'max_depth': None, 'n_estimators': 50}
+Accuracy: 0.9612
+
+Classification Report:
+              precision    recall  f1-score   support
+
+   open_palm       0.99      0.94      0.97      3482
+ closed_hand       0.98      0.95      0.96      3516
+     v_shape       1.00      0.97      0.98      3515
+  hand_right       0.96      0.96      0.96      3549
+   hand_left       0.96      0.99      0.97      3538
+   thumbs_up       0.89      0.97      0.93      3525
+
+    accuracy                           0.96     21125
+   macro avg       0.96      0.96      0.96     21125
+weighted avg       0.96      0.96      0.96     21125
+
+
+============================================================
+Running experiment with coordinates: XYZ
+============================================================
+
+Normalizing features...
+
+============================================================
+Training SVM with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'C': 1, 'gamma': 'auto', 'kernel': 'rbf'}
+Accuracy: 0.9887
+
+Classification Report:
+              precision    recall  f1-score   support
+
+   open_palm       0.98      0.97      0.98      3482
+ closed_hand       1.00      0.99      0.99      3516
+     v_shape       1.00      0.98      0.99      3515
+  hand_right       0.97      1.00      0.98      3549
+   hand_left       0.99      1.00      0.99      3538
+   thumbs_up       0.99      0.99      0.99      3525
+
+    accuracy                           0.99     21125
+   macro avg       0.99      0.99      0.99     21125
+weighted avg       0.99      0.99      0.99     21125
+
+
+============================================================
+Training KNN with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'n_neighbors': 3, 'weights': 'distance'}
+Accuracy: 0.9547
+
+Classification Report:
+              precision    recall  f1-score   support
+
+   open_palm       0.95      0.96      0.96      3482
+ closed_hand       0.95      0.94      0.94      3516
+     v_shape       1.00      0.92      0.96      3515
+  hand_right       0.94      0.98      0.96      3549
+   hand_left       0.94      0.99      0.96      3538
+   thumbs_up       0.95      0.94      0.95      3525
+
+    accuracy                           0.95     21125
+   macro avg       0.96      0.95      0.95     21125
+weighted avg       0.96      0.95      0.95     21125
+
+
+============================================================
+Training RandomForest with GridSearch
+============================================================
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Best parameters: {'max_depth': 20, 'n_estimators': 100}
+Accuracy: 0.9617
+
+Classification Report:
+              precision    recall  f1-score   support
+
+   open_palm       0.98      0.95      0.96      3482
+ closed_hand       0.99      0.95      0.97      3516
+     v_shape       1.00      0.92      0.96      3515
+  hand_right       0.96      0.97      0.96      3549
+   hand_left       0.93      1.00      0.96      3538
+   thumbs_up       0.93      0.98      0.96      3525
+
+    accuracy                           0.96     21125
+   macro avg       0.96      0.96      0.96     21125
+weighted avg       0.96      0.96      0.96     21125
+
+
+============================================================
+Final Comparison
+============================================================
+
+Model: SVM
+  Accuracy (x,y):   0.9858
+  Accuracy (x,y,z): 0.9887
+  -> Better with Z
+
+Model: KNN
+  Accuracy (x,y):   0.9600
+  Accuracy (x,y,z): 0.9547
+  -> Better without Z
+
+Model: RandomForest
+  Accuracy (x,y):   0.9612
+  Accuracy (x,y,z): 0.9617
+  -> Better with Z
+
+============================================================
+Best Overall Model
+============================================================
+Mode: xyz
+Model: SVM
+Accuracy: 0.9887
+Best model saved at: models_comparison\best_model.pkl
