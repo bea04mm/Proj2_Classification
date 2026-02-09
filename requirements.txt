@@ -7,4 +7,6 @@ scikeras==0.12.0
 matplotlib==3.8.2
 seaborn==0.13.0
 tensorflow==2.15.0
+scipy==1.12.0
+Pillow==10.1.0
 keras-facenet==0.3.2

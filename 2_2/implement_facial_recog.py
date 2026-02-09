@@ -1,7 +1,7 @@
 """
 Online Facial Recognition System - Part II.2)
 Real-time facial recognition using trained model
-Face Detection -> Crop -> Embeddings (VGG16) -> Classification
+Face Detection -> Crop -> Embeddings (FaceNet) -> Classification
 """
 
 import os
@@ -15,10 +15,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Deep learning for embeddings
-import tensorflow as tf
-from tensorflow.keras.applications import VGG16
-from tensorflow.keras.preprocessing import image as keras_image
-from tensorflow.keras.applications.vgg16 import preprocess_input
+from keras_facenet import FaceNet
 from collections import deque
 
 # Initialize face cascade for detection
@@ -35,7 +32,7 @@ class OnlineFacialRecognition:
         model_path,
         scaler_path,
         mapping_path,
-        embedding_dim=512,
+        embedding_dim=128,
         confidence_threshold=0.6,
     ):
         """
@@ -45,7 +42,7 @@ class OnlineFacialRecognition:
             model_path: Path to trained classifier (.pkl)
             scaler_path: Path to embeddings scaler (.pkl)
             mapping_path: Path to subject mapping (.pkl)
-            embedding_dim: Embedding dimension
+            embedding_dim: Embedding dimension (128 for FaceNet)
             confidence_threshold: Minimum confidence for recognition
         """
         # Load model, scaler, and mapping
@@ -61,33 +58,20 @@ class OnlineFacialRecognition:
         self.confidence_threshold = confidence_threshold
         self.embedding_dim = embedding_dim
 
-        # Initialize embedding model (VGG16)
+        # Initialize embedding model (FaceNet)
         self._init_embedding_model()
 
-        # Face recognition buffer
-        self.face_buffer = deque(maxlen=5)  # Keep last 5 predictions for smoothing
+        # Face recognition buffer for smoothing predictions
+        self.prediction_buffer = deque(maxlen=10)  # Keep last 10 predictions
 
         print(f"Model loaded: {Path(model_path).name}")
         print(f"Subjects: {list(self.subject_mapping.values())}")
         print(f"Confidence threshold: {confidence_threshold}")
 
     def _init_embedding_model(self):
-        """Initialize embedding model"""
-        base_model = VGG16(
-            weights="imagenet", input_shape=(224, 224, 3), include_top=False
-        )
-        self.embedding_model = tf.keras.Model(
-            inputs=base_model.input, outputs=base_model.get_layer("block5_pool").output
-        )
-        self.embedding_model = tf.keras.Sequential(
-            [
-                self.embedding_model,
-                tf.keras.layers.Flatten(),
-                tf.keras.layers.Dense(self.embedding_dim),
-            ]
-        )
-        self.embedding_model.trainable = False
-        print("Embedding model initialized")
+        """Initialize FaceNet embedding model"""
+        self.embedding_model = FaceNet()
+        print(f"FaceNet embedding model initialized ({self.embedding_dim}-dim)")
 
     def detect_faces(self, frame):
         """Detect faces in frame"""
@@ -101,8 +85,8 @@ class OnlineFacialRecognition:
         )
         return faces
 
-    def extract_face_crop(self, frame, face_rect, margin=15):
-        """Extract face crop with margin"""
+    def extract_face_crop(self, frame, face_rect, margin=20):
+        """Extract face crop with margin (same as training)"""
         x, y, w, h = face_rect
         x1 = max(0, x - margin)
         y1 = max(0, y - margin)
@@ -111,17 +95,19 @@ class OnlineFacialRecognition:
         return frame[y1:y2, x1:x2]
 
     def get_embedding(self, face_crop):
-        """Extract embedding from face crop"""
+        """Extract FaceNet embedding from face crop (same as training)"""
         try:
-            face_resized = cv2.resize(face_crop, (224, 224))
-            face_array = keras_image.img_to_array(face_resized)
-            face_array = np.expand_dims(face_array, axis=0)
-            face_array = preprocess_input(face_array)
-
-            embedding = self.embedding_model.predict(face_array, verbose=0)
-            embedding = embedding.flatten()
+            # Resize to 160x160 for FaceNet
+            face_resized = cv2.resize(face_crop, (160, 160))
+            # Convert BGR to RGB
+            face_rgb = cv2.cvtColor(face_resized, cv2.COLOR_BGR2RGB)
+            
+            # Get FaceNet embedding
+            embedding = self.embedding_model.embeddings([face_rgb])[0]
+            
+            # Normalize (L2 normalization)
             embedding = embedding / (np.linalg.norm(embedding) + 1e-6)
-
+            
             return embedding
         except Exception as e:
             print(f"Error extracting embedding: {e}")
@@ -147,18 +133,18 @@ class OnlineFacialRecognition:
         return subject_name, confidence, subject_id
 
     def smooth_prediction(self, prediction):
-        """Smooth prediction using buffer"""
-        self.face_buffer.append(prediction)
+        """Smooth prediction using temporal buffer"""
+        self.prediction_buffer.append(prediction)
 
-        # Get most common prediction
-        if len(self.face_buffer) > 0:
-            predictions = [p[0] for p in self.face_buffer]
+        # Get most common prediction from buffer
+        if len(self.prediction_buffer) > 0:
+            predictions = [p[0] for p in self.prediction_buffer]
             from collections import Counter
 
             most_common = Counter(predictions).most_common(1)[0][0]
 
             # Return most common prediction with average confidence
-            confidences = [p[1] for p in self.face_buffer if p[0] == most_common]
+            confidences = [p[1] for p in self.prediction_buffer if p[0] == most_common]
             avg_confidence = np.mean(confidences) if confidences else 0
 
             return most_common, avg_confidence
@@ -347,13 +333,18 @@ def main():
 
     # Configuration
     MODEL_DIR = Path("../2_1/models")
-    MODEL_PATH = MODEL_DIR / "facial_recognition_model_svm.pkl"
+    
+    # Choose classifier: 'svm', 'rf', 'knn', 'mlp', etc.
+    CLASSIFIER = "rf"  # Change this to use different model
+    
+    MODEL_PATH = MODEL_DIR / f"facial_recognition_model_{CLASSIFIER}.pkl"
     SCALER_PATH = MODEL_DIR / "embeddings_scaler.pkl"
     MAPPING_PATH = MODEL_DIR / "subject_mapping.pkl"
 
     print("=" * 60)
     print("ONLINE FACIAL RECOGNITION - Part II.2)")
     print("=" * 60)
+    print(f"Using classifier: {CLASSIFIER.upper()}")
 
     # Check if model files exist
     if not MODEL_PATH.exists():

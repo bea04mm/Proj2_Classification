@@ -1,6 +1,8 @@
-# Hand Gesture Classification Project - Part I
+# Hand Gesture Classification & Facial Recognition Project
 
-Static hand gesture classification using MediaPipe Hands, classic Machine Learning models, and Deep Learning (CNN-1D).
+**Part I:** Static hand gesture classification using MediaPipe Hands, classic Machine Learning models, and Deep Learning (CNN-1D).
+
+**Part II:** Facial recognition system using face embeddings and classic ML classifiers.
 
 ## Project Structure
 
@@ -31,6 +33,11 @@ Proj2_Classification/
 │   └── train_cnn_time_model_v2.py      # Relative to wrist + deltas
 ├── 1_3_b/                    # Part I.3.b) - Online with temporal features
 │   └── online_cnn_time_model.py        # Real-time with temporal CNN
+├── 2_1/                      # Part II.1) - Facial recognition training
+│   ├── facial_recognition.py           # Train face recognition models
+│   └── models/                         # Trained models (generated)
+├── 2_2/                      # Part II.2) - Online facial recognition
+│   └── implement_facial_recog.py       # Real-time face recognition
 ├── requirements.txt          # Python dependencies
 └── README.md                # This file
 ```
@@ -58,17 +65,28 @@ pip install -r requirements.txt
 ### Dependencies
 
 - Python 3.10
-- MediaPipe 0.10.9
-- OpenCV 4.8.1.78
-- protobuf 3.20.3
-- scikit-learn 1.3.2
-- scikeras 0.12.0
-- NumPy 1.24.3
-- Matplotlib 3.8.2
-- Seaborn 0.13.0
-- TensorFlow 2.15.0
+- **Part I (Hand Gestures):**
+  - MediaPipe 0.10.9
+  - OpenCV 4.8.1.78
+  - protobuf 3.20.3
+  - scikit-learn 1.3.2
+  - scikeras 0.12.0
+  - NumPy 1.24.3
+  - Matplotlib 3.8.2
+  - Seaborn 0.13.0
+  - TensorFlow 2.15.0
+- **Part II (Facial Recognition):**
+  - keras-facenet 0.3.2
+  - scipy 1.12.0
+  - Pillow 10.1.0
 
 See [requirements.txt](requirements.txt) for complete list.
+
+---
+
+# Part I - Hand Gesture Classification
+
+---
 
 ## Recognized Gestures
 
@@ -470,9 +488,268 @@ python online_cnn_time_model.py
 
 ---
 
+# Part II - Facial Recognition System
+
+---
+
+## Part II.1) - Facial Recognition Training (Offline)
+
+### Overview
+
+Trains facial recognition models using face embeddings extracted from video clips. The system:
+1. **Detects faces** using Haar Cascade classifier
+2. **Extracts face embeddings** using FaceNet (128-dimensional)
+3. **Trains classic ML classifiers** (SVM, Random Forest)
+4. **Evaluates performance** with accuracy, classification reports, and confusion matrices
+
+This creates a robust facial recognition system that can identify different subjects from video footage.
+
+### Running the Training Script
+
+```bash
+cd 2_1
+python facial_recognition.py
+```
+
+### What the Script Does
+
+1. **Loads video clips** from `Videos_Datasets/` folder (all gestures per subject)
+2. **Detects faces** using Haar Cascade with optimized parameters:
+   - Larger minimum face size (80x80 pixels) for better quality
+   - Stricter detection parameters to filter false positives
+3. **Applies quality filters**:
+   - Rejects blurry faces (Laplacian variance threshold)
+   - Filters out small/low-quality detections
+   - Ensures only clear, well-detected faces are used
+4. **Extracts face crops** with margin for full context
+5. **Generates embeddings** using FaceNet:
+   - 128-dimensional face embeddings
+   - L2-normalized for better comparison
+6. **Splits data** (80/20 train/test split, stratified by subject)
+7. **Trains classifier**:
+   - SVM (default): RBF kernel, balanced class weights
+   - Random Forest: 200 trees, balanced weights
+8. **Evaluates model**:
+   - Test accuracy and confidence analysis
+   - Classification report (precision, recall, f1-score per subject)
+   - Confusion matrix visualization
+   - Low-confidence prediction analysis
+9. **Saves trained models** in `models/` folder
+
+### Architecture
+
+```
+Video Frame
+    ↓
+Haar Cascade Face Detection (80x80 min size)
+    ↓
+Quality Filters (blur detection, size check)
+    ↓
+Face Crop Extraction (with margin)
+    ↓
+FaceNet Embedding (128-dim, L2-normalized)
+    ↓
+StandardScaler (normalize embeddings)
+    ↓
+SVM/Random Forest Classifier
+    ↓
+Subject Prediction
+```
+
+### Output Files
+
+After running, you'll find in `2_1/models/`:
+
+- `facial_recognition_model_svm.pkl` - Trained SVM model (or `_rf.pkl` for Random Forest)
+- `embeddings_scaler.pkl` - StandardScaler for embedding normalization
+- `subject_mapping.pkl` - Dictionary mapping model IDs to subject names
+- `confusion_matrix.png` - Confusion matrix visualization
+
+### Configuration
+
+You can modify parameters in `facial_recognition.py`:
+
+```python
+# In main():
+DATASET_PATH = Path("../Videos_Datasets")  # Path to dataset
+OUTPUT_DIR = "models"  # Output directory for models
+CLASSIFIER_TYPE = "svm"  # 'svm' or 'rf' (Random Forest)
+
+# Face detection parameters:
+scaleFactor = 1.05  # More precise detection
+minNeighbors = 8    # Only well-detected faces
+minSize = (80, 80)  # Larger minimum for better quality
+
+# Quality filters:
+blur_threshold = 120  # Laplacian variance threshold
+min_face_size = 80    # Minimum face dimension
+
+# Training:
+test_size = 0.2  # 20% test split
+```
+
+### Model Hyperparameters
+
+**SVM (recommended):**
+```python
+SVC(
+    kernel='rbf',
+    C=10.0,              # Regularization
+    gamma='scale',       # Kernel coefficient
+    probability=True,    # Enable probability estimates
+    class_weight='balanced'  # Handle imbalanced classes
+)
+```
+
+**Random Forest:**
+```python
+RandomForestClassifier(
+    n_estimators=200,    # Number of trees
+    max_depth=None,      # No depth limit
+    min_samples_split=5, # Avoid overfitting
+    min_samples_leaf=2,
+    class_weight='balanced',
+    n_jobs=-1            # Use all CPU cores
+)
+```
+
+### Quality Metrics
+
+The script provides detailed quality analysis:
+- **Average confidence**: Mean prediction confidence across test set
+- **Low-confidence predictions**: Number of predictions with confidence < 0.7
+- **Confidence range**: Min/max confidence scores
+- **Examples of uncertain predictions**: Shows which faces were harder to classify
+
+---
+
+## Part II.2) - Online Facial Recognition (Real-time)
+
+### Overview
+
+Real-time facial recognition using webcam input and trained models from Part II.1. Performs live face detection, embedding extraction, and subject identification with confidence scores.
+
+### Prerequisites
+
+Train the facial recognition model first:
+```bash
+cd 2_1
+python facial_recognition.py
+```
+
+### Running Online Facial Recognition
+
+```bash
+cd 2_2
+python implement_facial_recog.py
+```
+
+By default, uses the Random Forest classifier. To use SVM or other classifiers, modify the `CLASSIFIER` variable in the script:
+
+```python
+# In main():
+CLASSIFIER = "svm"  # Change to 'svm', 'rf', etc.
+```
+
+### Usage
+
+1. The script will load the trained model from `../2_1/models/`
+2. Webcam will open and start recognizing faces in real-time
+3. Press **'q'** to quit
+
+### How It Works
+
+1. **Captures video** from webcam (1280x720 @ 30fps)
+2. **Detects faces** using Haar Cascade classifier
+3. **Extracts face crops** with margin for full context
+4. **Generates face embedding** using FaceNet:
+   - 128-dimensional embedding
+   - L2-normalized for consistency
+5. **Normalizes embedding** using saved StandardScaler
+6. **Predicts subject** using trained classifier:
+   - Gets subject ID and name
+   - Calculates confidence score (max probability)
+7. **Smooths predictions** using temporal buffer:
+   - Maintains buffer of recent predictions (size 10)
+   - Uses majority voting for stability
+   - Averages confidence scores
+8. **Displays results** with colored bounding boxes
+
+### Display Information
+
+The video window shows:
+- **Bounding box** around detected face (color-coded per subject)
+- **Subject name** above the face
+- **Confidence score** (e.g., "95.2%")
+- **Model type** in top-left corner
+- **FPS counter** (frames per second)
+- **"Unknown"** label if confidence < threshold (default 0.6)
+- **Instructions** (press 'Q' to quit)
+
+### Confidence Threshold
+
+- **High confidence (≥ 0.6)**: Displays subject name with color
+- **Low confidence (< 0.6)**: Displays "Unknown" in gray
+- Default threshold is 0.6, configurable in the script:
+
+```python
+# When creating recognizer:
+recognizer = OnlineFacialRecognition(
+    MODEL_PATH, SCALER_PATH, MAPPING_PATH,
+    confidence_threshold=0.6  # Adjust this value
+)
+```
+
+### Subject Color Mapping
+
+Each subject is assigned a unique color for visualization:
+- Green, Red, Blue, Cyan, Magenta, Yellow, Orange, Brown
+- Colors are consistently assigned across all subjects
+- Makes it easy to visually distinguish between different people
+
+### Configuration
+
+You can modify parameters in `implement_facial_recog.py`:
+
+```python
+# In main():
+MODEL_DIR = Path("../2_1/models")
+CLASSIFIER = "rf"  # 'svm', 'rf', etc.
+
+# In OnlineFacialRecognition initialization:
+confidence_threshold = 0.6  # Minimum confidence for recognition
+buffer_size = 10            # Smoothing buffer size
+
+# Camera settings:
+camera_id = 0               # Default camera
+frame_width = 1280
+frame_height = 720
+fps = 30
+```
+
+### Tips for Best Results
+
+- **Lighting**: Ensure good, consistent lighting on faces
+- **Distance**: Keep face at medium distance (50-80cm from camera)
+- **Angle**: Face the camera directly for best recognition
+- **Multiple faces**: System processes all detected faces simultaneously
+- **Movement**: Slight movement is OK; smoothing buffer handles variations
+- **Background**: Clean backgrounds improve face detection accuracy
+- **Training data**: More training videos per subject = better accuracy
+
+### Key Features
+
+- **Multiple face detection**: Recognizes multiple people in frame simultaneously
+- **Temporal smoothing**: Uses buffer to stabilize predictions over time
+- **Confidence-based filtering**: Only shows predictions above threshold
+- **Real-time FPS display**: Monitor system performance
+- **Color-coded subjects**: Easy visual identification
+
+---
+
 ## Dataset Organization
 
-Videos should be organized as follows:
+Videos should be organized as follows (used by both Part I and Part II):
 
 ```
 Videos_Datasets/
@@ -499,6 +776,10 @@ Videos_Datasets/
 - Upper body visible (head, right hand, trunk)
 - Varied hand positions and distances
 - Supported formats: `.avi`, `.mp4`
+
+**Usage:**
+- **Part I (Hand Gestures):** Uses hand gestures captured in videos (all 6 gesture folders)
+- **Part II (Facial Recognition):** Uses faces from all videos to train subject identification (subject names from folder structure)
 
 ---
 
@@ -597,13 +878,117 @@ The `tensorflow.keras.wrappers` module was removed in newer TensorFlow versions.
 - Close other applications
 - Use fewer filters in the parameter grid
 
+### Part II Issues
+
+#### Training Issues (Part II.1)
+
+**ModuleNotFoundError: keras_facenet:**
+```bash
+pip install keras-facenet
+```
+
+**No faces detected in videos:**
+- Check if videos contain clear, visible faces
+- Ensure proper lighting in videos
+- Verify face is large enough (minimum 80x80 pixels)
+- Try reducing `minNeighbors` parameter for more sensitive detection
+
+**Low accuracy or high false positives:**
+- Ensure sufficient training videos per subject (all 6 gestures recommended)
+- Check video quality - avoid blurry or low-resolution videos
+- Verify good lighting and clear face visibility
+- Try adjusting face detection parameters (scaleFactor, minNeighbors)
+- Increase blur detection threshold for stricter quality filtering
+- Consider using more clips per subject or different angles
+
+**Too many blurry faces rejected:**
+- Lower `blur_threshold` in face detection (default 120)
+- Check video quality - ensure videos are not actually blurry
+- Adjust quality filter parameters
+
+**Out of memory during training:**
+- Reduce number of frames processed per video (`max_frames` parameter)
+- Increase `skip_frames` to process fewer frames
+- Close other applications
+- Use smaller batch of videos for initial testing
+
+**Imbalanced classes warning:**
+- Ensure all subjects have similar number of videos
+- Check that all subjects have videos in the dataset
+- Verify dataset structure is correct
+
+#### Online Recognition Issues (Part II.2)
+
+**Models not found:**
+```bash
+cd 2_1
+python facial_recognition.py
+```
+Train the models first before running online recognition.
+
+**No face detected in webcam:**
+- Check lighting and face position
+- Ensure camera is working and has permissions
+- Keep face visible and at medium distance (50-80cm)
+- Face the camera directly
+- Try adjusting face detection parameters
+
+**Always shows "Unknown":**
+- Check confidence threshold (default 0.6):
+  - Lower threshold for easier recognition
+  - Raise threshold for stricter recognition
+- Ensure face is well-lit and clearly visible
+- Verify the subject was in the training dataset
+- Check that face is similar to training conditions (angle, lighting)
+
+**Wrong person recognized:**
+- Ensure subjects in training data are distinct
+- Check confidence scores - low confidence = uncertain predictions
+- Try using SVM instead of Random Forest (generally more accurate)
+- Retrain with more diverse videos per subject
+- Ensure good lighting and face visibility
+
+**Flickering predictions:**
+- Increase buffer size for more smoothing (default 10)
+- Raise confidence threshold to filter uncertain predictions
+- Ensure stable lighting conditions
+- Keep face position relatively stable
+
+**Low FPS:**
+- FaceNet embedding extraction may be slow on older hardware
+- Close other applications
+- Use a faster computer
+- Consider reducing camera resolution
+
+**Camera not opening:**
+- Change `camera_id` parameter (default is 0, try 1, 2, etc.)
+- Check camera permissions
+- Verify camera is not in use by another application
+- Test camera with other applications first
+
+### General Issues
+
+**TensorFlow warnings:**
+```bash
+# Suppress TensorFlow logging
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # Already in scripts
+```
+
+**CUDA/GPU issues:**
+- TensorFlow will automatically use GPU if available
+- CPU-only is fine for this project
+- If GPU issues occur, ensure CUDA and cuDNN are properly installed
+
 ---
 
 ## Performance Results
 
+### Part I - Hand Gesture Classification
+
 Based on typical training results:
 
-### Classic Machine Learning Models (Part I.2.a)
+#### Classic Machine Learning Models (Part I.2.a)
 
 | Model | Accuracy | Notes |
 |-------|----------|-------|
@@ -611,7 +996,24 @@ Based on typical training results:
 | **Random Forest** | ~96-97% | Good balance of speed and accuracy |
 | **KNN** | ~95-96% | Fast inference, slightly lower accuracy |
 
-### Deep Learning Models
+### Part II - Facial Recognition
+
+Based on typical training results:
+
+#### Facial Recognition Models (Part II.1)
+
+| Model | Accuracy | Notes |
+|-------|----------|-------|
+| **SVM** | ~90-98% | Best overall, robust to variations, recommended |
+| **Random Forest** | ~88-96% | Good performance, faster training than SVM |
+
+**Note**: Performance depends heavily on:
+- Quality and quantity of training videos per subject
+- Number of subjects in dataset
+- Lighting conditions and face angles in videos
+- Face detection quality and embedding extraction
+
+### Deep Learning Models (Part I)
 
 | Model | Accuracy | Notes |
 |-------|----------|-------|
@@ -627,7 +1029,9 @@ Based on typical training results:
 | **XY Coordinates** | Faster processing, smaller models | Loses depth information |
 | **XYZ Coordinates** | Full 3D information | Larger models, more data needed |
 
-### Comparison
+### Comparison Summary
+
+#### Part I - Hand Gestures
 
 - **Classic ML (SVM)**: Best for instant single-frame predictions, lowest latency, excellent accuracy
 - **CNN-1D**: Best for temporal pattern recognition, smoother predictions, requires sequence buffer
@@ -635,12 +1039,24 @@ Based on typical training results:
 - **Relative to Wrist**: More robust to hand position variations, recommended for real-world deployment
 - All models show excellent performance (>95% accuracy) for the 6-gesture classification task
 
+#### Part II - Facial Recognition
+
+- **SVM**: Best overall facial recognition model, robust to variations
+- **Random Forest**: Good alternative, faster training, slightly lower accuracy
+- **FaceNet Embeddings**: High-quality 128-dimensional face representations for both training and online recognition
+- Performance highly dependent on training data quality and diversity
+
 ### Recommended Use Cases
 
+**Part I (Hand Gestures):**
 - **SVM (Absolute)**: Best overall classic ML model, use when immediate response is critical
 - **SVM (Relative to Wrist)**: Most robust to position variations
 - **CNN-1D (Relative to Wrist)**: Best for continuous gesture recognition with temporal context
 - **CNN with Temporal Features**: Best for dynamic, motion-based gestures
 - **Random Forest**: Good alternative with balanced performance
 - **KNN**: Fastest inference, suitable for resource-constrained scenarios
+
+**Part II (Facial Recognition):**
+- **SVM**: Best for most facial recognition scenarios, recommended default
+- **Random Forest**: Use when training time is a concern or for faster iteration
 
