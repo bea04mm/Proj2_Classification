@@ -1,0 +1,36 @@
+============================================================
+Test accuracy: 0.9991
+Average confidence: 0.9974
+Low confidence predictions (<0.7): 2/3333 (0.1%)
+Minimum confidence: 0.4767
+Maximum confidence: 1.0000
+============================================================
+
+Classification report:
+                   precision    recall  f1-score   support
+
+Antonio_Goncalves       1.00      1.00      1.00       362
+          Beatriz       1.00      1.00      1.00       894
+        Cristiane       1.00      0.99      1.00       539
+          goncalo       1.00      1.00      1.00        77
+          Jessica       1.00      1.00      1.00       145
+       João_Alves       1.00      1.00      1.00       343
+     joão_joaquim       1.00      1.00      1.00       436
+       Ruben Dias       1.00      1.00      1.00       537
+
+         accuracy                           1.00      3333
+        macro avg       1.00      1.00      1.00      3333
+     weighted avg       1.00      1.00      1.00      3333
+
+
+  Examples of low confidence predictions:
+  Real: Cristiane            | Predicted: Beatriz              | Confidence: 0.4767
+  Real: Antonio_Goncalves    | Predicted: Antonio_Goncalves    | Confidence: 0.6020
+Confusion matrix saved to models\confusion_matrix.png
+Model saved to models\facial_recognition_model_svm.pkl
+Scaler saved to models\embeddings_scaler.pkl
+Subject mapping saved to models\subject_mapping.pkl
+
+============================================================
+TRAINING COMPLETED SUCCESSFULLY!
+============================================================
