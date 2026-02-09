@@ -11,6 +11,7 @@ from pathlib import Path
 import pickle
 import time
 import warnings
+import tensorflow as tf
 
 warnings.filterwarnings("ignore")
 
@@ -205,7 +206,7 @@ class OnlineFacialRecognition:
             # If no faces detected
             if len(faces) == 0:
                 face_detected = False
-                self.face_buffer.clear()
+                self.prediction_buffer.clear()
                 current_subject = "Unknown"
                 current_confidence = 0.0
             else:
@@ -335,7 +336,7 @@ def main():
     MODEL_DIR = Path("../2_1/models")
     
     # Choose classifier: 'svm', 'rf', 'knn', 'mlp', etc.
-    CLASSIFIER = "rf"  # Change this to use different model
+    CLASSIFIER = "svm"  # Change this to use different model
     
     MODEL_PATH = MODEL_DIR / f"facial_recognition_model_{CLASSIFIER}.pkl"
     SCALER_PATH = MODEL_DIR / "embeddings_scaler.pkl"

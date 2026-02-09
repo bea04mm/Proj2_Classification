@@ -644,11 +644,11 @@ cd 2_2
 python implement_facial_recog.py
 ```
 
-By default, uses the Random Forest classifier. To use SVM or other classifiers, modify the `CLASSIFIER` variable in the script:
+By default, uses the SVM classifier. To use Random Forest or other classifiers, modify the `CLASSIFIER` variable in the script:
 
 ```python
 # In main():
-CLASSIFIER = "svm"  # Change to 'svm', 'rf', etc.
+CLASSIFIER = "svm"  # Change to 'rf', etc.
 ```
 
 ### Usage
